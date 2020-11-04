@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 
 import "./IBridge_v1.sol";
-import "./zeppelin/ownership/Ownable.sol";
+import "../zeppelin/ownership/Ownable.sol";
 
 contract Federation_v1 is Ownable {
     uint constant public MAX_MEMBER_COUNT = 50;
