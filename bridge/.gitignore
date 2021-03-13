@@ -1,5 +1,6 @@
 infura.key
 mnemonic.key
+privateKey.secret
 build
 .openzeppelin/.session
 .openzeppelin/dev-*.json

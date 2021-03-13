@@ -12,10 +12,29 @@
  *   },
  */
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+const ContractKit = require('@celo/contractkit')
 const fs = require('fs');
+const Web3 = require('web3')
+const path = require('path')
 
+// Connect to the desired network
+const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
+const kit = ContractKit.newKitFromWeb3(web3)
+// const kit = Kit.newKit('https://forno.celo.org') // mainnet endpoint
+
+const getAccount = require('./getAccount').getAccount
 let MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+
+async function awaitWrapper(){
+  let account = await getAccount()
+  console.log(`Account address: ${account.address}`)
+  console.log(account.privateKey)
+  kit.addAccount(account.privateKey)
+}
+
+awaitWrapper()
+
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -89,6 +108,14 @@ module.exports = {
       gasPrice: 250000000000,
       skipDryRun: true
     },
+    alfajores: {
+      provider: kit.web3.currentProvider,
+      network_id: 44787
+    },
+    celo_mainnet: {
+      provider: kit.web3.currentProvider,
+      network_id: 42220
+    }
   },
   plugins: ["solidity-coverage"],
   mocha: {
