@@ -1,11 +1,10 @@
 pragma solidity ^0.5.0;
 
-// Import base Initializable contract
-import "./zeppelin/upgradable/Initializable.sol";
+
 // Import interface and library from OpenZeppelin contracts
-import "./zeppelin/upgradable/utils/ReentrancyGuard.sol";
-import "./zeppelin/upgradable/lifecycle/UpgradablePausable.sol";
-import "./zeppelin/upgradable/ownership/UpgradableOwnable.sol";
+import "./zeppelin//utils/ReentrancyGuard.sol";
+import "./zeppelin/lifecycle/Pausable.sol";
+import "./zeppelin/ownership/Ownable.sol";
 
 import "./zeppelin/introspection/IERC1820Registry.sol";
 import "./zeppelin/token/ERC777/IERC777Recipient.sol";
@@ -20,7 +19,7 @@ import "./ISideTokenFactory.sol";
 import "./AllowTokens.sol";
 import "./Utils.sol";
 
-contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable, UpgradableOwnable, ReentrancyGuard {
+contract Bridge is IBridge, IERC777Recipient, Pausable, Ownable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     using Address for address;
@@ -50,15 +49,13 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
     event SideTokenFactoryChanged(address _newSideTokenFactory);
     event Upgrading(bool isUpgrading);
 
-    function initialize(
+    constructor(
         address _manager,
         address _federation,
         address _allowTokens,
         address _sideTokenFactory,
         string memory _symbolPrefix
-    ) public initializer {
-        UpgradableOwnable.initialize(_manager);
-        UpgradablePausable.initialize(_manager);
+    ) public {
         symbolPrefix = _symbolPrefix;
         allowTokens = AllowTokens(_allowTokens);
         _changeSideTokenFactory(_sideTokenFactory);
@@ -296,17 +293,7 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
         emit SideTokenFactoryChanged(newSideTokenFactory);
     }
 
-    function startUpgrade() external onlyOwner {
-        isUpgrading = true;
-        emit Upgrading(isUpgrading);
-    }
-
-    function endUpgrade() external onlyOwner {
-        isUpgrading = false;
-        emit Upgrading(isUpgrading);
-    }
-
-    //This method is only to recreate the USDT and USDC tokens on rsk without granularity restrictions.
+       //This method is only to recreate the USDT and USDC tokens on rsk without granularity restrictions.
     function clearSideToken() external onlyOwner returns(bool) {
         require(!alreadyRun, "already done");
         alreadyRun = true;

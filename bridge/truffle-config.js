@@ -29,7 +29,6 @@ const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura
 async function awaitWrapper(){
   let account = await getAccount()
   console.log(`Account address: ${account.address}`)
-  console.log(account.privateKey)
   kit.addAccount(account.privateKey)
 }
 
