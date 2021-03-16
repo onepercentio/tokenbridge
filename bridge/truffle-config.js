@@ -27,10 +27,10 @@ let MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 
 async function awaitWrapper(){
-  let account = await getAccount()
-  console.log(`Account address: ${account.address}`)
-  console.log(account.privateKey)
-  kit.addAccount(account.privateKey)
+  // let account = await getAccount()
+  // console.log(`Account address: ${account.address}`)
+  console.log('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd')
+  kit.addAccount('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd')
 }
 
 awaitWrapper()
@@ -91,7 +91,7 @@ module.exports = {
       provider: () => new HDWalletProvider(MNEMONIC, "https://kovan.infura.io/v3/" + INFURA_API_KEY),
       network_id: 42,
       gas: 6300000,
-      gasPrice: 10000000000,
+      gasPrice: 1000000000,
       skipDryRun: true
     },
     rinkeby: {

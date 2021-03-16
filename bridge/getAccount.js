@@ -11,24 +11,26 @@ var web3 = new Web3();
 const filePath = path.join('', './privateKey.secret');
 
 function getAccount() {
-    return new Promise(resolve => {
-        if(fs.existsSync(filePath)){
-            fs.readFile(filePath, {encoding: 'utf-8'}, (err, data) => {
-                resolve(web3.eth.accounts.privateKeyToAccount(data))
-            })
-        } else {
-            let randomAccount = web3.eth.accounts.create()
-        
-            fs.writeFile(filePath, randomAccount.privateKey, (err) => {
-                if(err) {
-                    return console.log(err);
-                }
-            })
-
-            resolve(randomAccount)
+    return web3.eth.accounts.privateKeyToAccount('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd')
+    // return new Promise(resolve => {
+    //     if(fs.existsSync(filePath)){
+    //         fs.readFile(filePath, {encoding: 'utf-8'}, (err, data) => {
+    //             resolve(web3.eth.accounts.privateKeyToAccount('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd'))
+    //         })
+    //     } else {
+    //         let randomAccount = web3.eth.accounts.create()
             
-        }
-    })
+        
+    //         fs.writeFile(filePath, randomAccount.privateKey, (err) => {
+    //             if(err) {
+    //                 return console.log(err);
+    //             }
+    //         })
+
+    //         resolve(randomAccount)
+            
+    //     }
+    // })
 }
 
 module.exports = {

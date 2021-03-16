@@ -1,0 +1,9 @@
+{
+    "bridge": "0x84a2cf122db17ea0163d8d9d01957f6bdc56e35c",
+    "federation": "0x990b8fabb45ef5c0d2f281382f38b691160c3a32",
+    "multiSig": "0xb2d511616be857906d8bb39f285861419449cd3c",
+    "allowTokens": "0x927825c695139c393383107855de50eaf87acff5",
+    "testToken": "0x5ec41ae8fce6982aad68b01eef634b1c60c6e655",
+    "host": "",
+    "fromBlock": 4115375
+}
