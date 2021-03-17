@@ -27,7 +27,7 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
 
     address constant private NULL_ADDRESS = address(0);
     bytes32 constant private NULL_HASH = bytes32(0);
-    IERC1820Registry constant private erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    // IERC1820Registry constant private erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
 
     address private federation;
     uint256 private feePercentage;
@@ -64,7 +64,7 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
         _changeSideTokenFactory(_sideTokenFactory);
         _changeFederation(_federation);
         //keccak256("ERC777TokensRecipient")
-        erc1820.setInterfaceImplementer(address(this), 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b, address(this));
+        // erc1820.setInterfaceImplementer(address(this), 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b, address(this));
     }
 
     function version() external pure returns (string memory) {
