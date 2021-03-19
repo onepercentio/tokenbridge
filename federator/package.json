@@ -24,8 +24,9 @@
     "web3": "^1.2.11"
   },
   "devDependencies": {
+    "@celo/contractkit": "^1.0.2",
     "jest": "^26.4.2",
-    "web3-core-promievent": "^1.2.11",
-    "node-notifier": "^8.0.1"
+    "node-notifier": "^8.0.1",
+    "web3-core-promievent": "^1.2.11"
   }
 }

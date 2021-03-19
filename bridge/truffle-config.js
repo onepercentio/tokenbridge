@@ -92,7 +92,8 @@ module.exports = {
       network_id: 42,
       gas: 6300000,
       gasPrice: 1000000000,
-      skipDryRun: true
+      skipDryRun: true,
+      networkCheckTimeout: 300000
     },
     rinkeby: {
       provider: () => new HDWalletProvider(MNEMONIC, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY),

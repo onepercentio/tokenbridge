@@ -67,12 +67,7 @@ Once you have  changed this configurations create the **docker image from the ro
 Then run :
 
 ```sh
-docker run --rm \
-    --network host \
-    -v $PWD/federator/config:/app/federator/config \
-    -v $PWD/federator/db:/app/federator/db \
-    --name=fed-tokenbridge \
-    fed-tokenbridge:latest
+docker run --rm --network host -v $PWD/federator/config:/app/federator/config -v $PWD/federator/db:/app/federator/db --name=fed-tokenbridge fed-tokenbridge:latest
 ```
 
 to start the image.
