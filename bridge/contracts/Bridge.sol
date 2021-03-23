@@ -27,7 +27,7 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
 
     address constant private NULL_ADDRESS = address(0);
     bytes32 constant private NULL_HASH = bytes32(0);
-    // IERC1820Registry constant private erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    IERC1820Registry constant private erc1820 = IERC1820Registry(0x070b78bE24f5eBbaba098E30480b0a1422334ceb);
 
     address private federation;
     uint256 private feePercentage;
