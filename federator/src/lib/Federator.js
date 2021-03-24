@@ -1,4 +1,3 @@
-const { newKit } = require('@celo/contractkit')
 const web3 = require('web3');
 const fs = require('fs');
 const abiBridge = require('../../../abis/Bridge.json');
@@ -25,21 +24,20 @@ module.exports = class Federator {
     }
 
     async run() {
-        let retries = 1;
-        // let retries = 3;
+        let retries = 3;
         const sleepAfterRetrie = 3000;
-        while (retries > 0) {
+        while(retries > 0) {
             try {
                 const currentBlock = await this.mainWeb3.eth.getBlockNumber();
                 const chainId = await this.mainWeb3.eth.net.getId();
                 let confirmations = 0; //for rsk regtest and ganache
-                if (chainId == 31 || chainId == 42) { // rsk testnet and kovan
+                if(chainId == 31 || chainId == 42) { // rsk testnet and kovan
                     confirmations = 10
                 }
-                if (chainId == 1) { //ethereum mainnet 24hs
+                if( chainId == 1) { //ethereum mainnet 24hs
                     confirmations = 5760
                 }
-                if (chainId == 30) { // rsk mainnet 24hs
+                if(chainId == 30) { // rsk mainnet 24hs
                     confirmations = 2880
                 }
                 const toBlock = currentBlock - confirmations;
@@ -56,27 +54,27 @@ module.exports = class Federator {
                 let fromBlock = null;
                 try {
                     fromBlock = fs.readFileSync(this.lastBlockPath, 'utf8');
-                } catch (err) {
+                } catch(err) {
                     fromBlock = originalFromBlock;
                 }
-                if (fromBlock < originalFromBlock) {
+                if(fromBlock < originalFromBlock) {
                     fromBlock = originalFromBlock;
                 }
-                if (fromBlock >= toBlock) {
+                if(fromBlock >= toBlock){
                     this.logger.warn(`Current chain Height ${toBlock} is the same or lesser than the last block processed ${fromBlock}`);
                     return false;
                 }
-                fromBlock = parseInt(fromBlock) + 1;
+                fromBlock = parseInt(fromBlock)+1;
                 this.logger.debug('Running from Block', fromBlock);
-
+                
                 const recordsPerPage = 1000;
                 const numberOfPages = Math.ceil((toBlock - fromBlock) / recordsPerPage);
                 this.logger.debug(`Total pages ${numberOfPages}, blocks per page ${recordsPerPage}`);
 
                 var fromPageBlock = fromBlock;
-                for (var currentPage = 1; currentPage <= numberOfPages; currentPage++) {
-                    var toPagedBlock = fromPageBlock + recordsPerPage - 1;
-                    if (currentPage == numberOfPages) {
+                for(var currentPage = 1; currentPage <= numberOfPages; currentPage++) { 
+                    var toPagedBlock = fromPageBlock + recordsPerPage-1;
+                    if(currentPage == numberOfPages) {
                         toPagedBlock = toBlock
                     }
                     this.logger.debug(`Page ${currentPage} getting events from block ${fromPageBlock} to ${toPagedBlock}`);
@@ -90,14 +88,14 @@ module.exports = class Federator {
                     await this._processLogs(logs, toPagedBlock);
                     fromPageBlock = toPagedBlock + 1;
                 }
-
+                
                 return true;
             } catch (err) {
                 console.log(err)
                 this.logger.error(new Error('Exception Running Federator'), err);
                 retries--;
-                this.logger.debug(`Run ${3 - retries} retrie`);
-                if (retries > 0) {
+                this.logger.debug(`Run ${3-retries} retrie`);
+                if( retries > 0) {
                     await utils.sleep(sleepAfterRetrie);
                 } else {
                     process.exit();
@@ -110,12 +108,12 @@ module.exports = class Federator {
         try {
             const transactionSender = new TransactionSender(this.sideWeb3, this.logger, this.config);
             const from = await transactionSender.getAddress(this.config.privateKey);
-
-            for (let log of logs) {
+            
+            for(let log of logs) {
                 this.logger.info('Processing event log:', log);
 
                 const { _to: receiver, _amount: amount, _symbol: symbol, _tokenAddress: tokenAddress,
-                    _decimals: decimals, _granularity: granularity } = log.returnValues;
+                    _decimals: decimals, _granularity:granularity } = log.returnValues;
 
                 let transactionId = await this.federationContract.methods.getTransactionId(
                     tokenAddress,
@@ -132,8 +130,8 @@ module.exports = class Federator {
 
                 let wasProcessed = await this.federationContract.methods.transactionWasProcessed(transactionId).call();
                 if (!wasProcessed) {
-                    let hasVoted = await this.federationContract.methods.hasVoted(transactionId).call({ from: from });
-                    if (!hasVoted) {
+                    let hasVoted = await this.federationContract.methods.hasVoted(transactionId).call({from: from});
+                    if(!hasVoted) {
                         this.logger.info(`Voting tx: ${log.transactionHash} block: ${log.blockHash} token: ${symbol}`);
                         await this._voteTransaction(tokenAddress,
                             receiver,
@@ -147,16 +145,16 @@ module.exports = class Federator {
                     } else {
                         this.logger.debug(`Block: ${log.blockHash} Tx: ${log.transactionHash} token: ${symbol}  has already been voted by us`);
                     }
-
+                    
                 } else {
                     this.logger.debug(`Block: ${log.blockHash} Tx: ${log.transactionHash} token: ${symbol} was already processed`);
                 }
             }
-            // this._saveProgress(this.lastBlockPath, toBlock);
+            this._saveProgress(this.lastBlockPath, toBlock);
 
             return true;
         } catch (err) {
-            // throw new CustomError(`Exception processing logs`, err);
+            throw new CustomError(`Exception processing logs`, err);
         }
     }
 
@@ -166,7 +164,7 @@ module.exports = class Federator {
 
             const transactionSender = new TransactionSender(this.sideWeb3, this.logger, this.config);
             this.logger.info(`Voting Transfer ${amount} of ${symbol} trough sidechain bridge ${this.sideBridgeContract.options.address} to receiver ${receiver}`);
-
+            
             let txId = await this.federationContract.methods.getTransactionId(
                 tokenAddress,
                 receiver,
@@ -178,671 +176,7 @@ module.exports = class Federator {
                 decimals,
                 granularity
             ).call();
-
-
-            console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
-            console.log(this.federationContract.options.address)
-
-            const kit = newKit('https://alfajores-forno.celo-testnet.org')
-            kit.connection.addAccount(this.config.privateKey)
-            const instance = new kit.web3.eth.Contract(
-                [
-                    {
-                        "inputs": [
-                            {
-                                "internalType": "address[]",
-                                "name": "_members",
-                                "type": "address[]"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "_required",
-                                "type": "uint256"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "constructor"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": false,
-                                "internalType": "address",
-                                "name": "bridge",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "BridgeChanged",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": true,
-                                "internalType": "bytes32",
-                                "name": "transactionId",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "name": "Executed",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": true,
-                                "internalType": "address",
-                                "name": "member",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "MemberAddition",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": true,
-                                "internalType": "address",
-                                "name": "member",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "MemberRemoval",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": true,
-                                "internalType": "address",
-                                "name": "previousOwner",
-                                "type": "address"
-                            },
-                            {
-                                "indexed": true,
-                                "internalType": "address",
-                                "name": "newOwner",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "OwnershipTransferred",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": false,
-                                "internalType": "uint256",
-                                "name": "required",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "RequirementChange",
-                        "type": "event"
-                    },
-                    {
-                        "anonymous": false,
-                        "inputs": [
-                            {
-                                "indexed": true,
-                                "internalType": "address",
-                                "name": "sender",
-                                "type": "address"
-                            },
-                            {
-                                "indexed": true,
-                                "internalType": "bytes32",
-                                "name": "transactionId",
-                                "type": "bytes32"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "address",
-                                "name": "originalTokenAddress",
-                                "type": "address"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "address",
-                                "name": "receiver",
-                                "type": "address"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "string",
-                                "name": "symbol",
-                                "type": "string"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "bytes32",
-                                "name": "blockHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "indexed": true,
-                                "internalType": "bytes32",
-                                "name": "transactionHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "uint32",
-                                "name": "logIndex",
-                                "type": "uint32"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "uint8",
-                                "name": "decimals",
-                                "type": "uint8"
-                            },
-                            {
-                                "indexed": false,
-                                "internalType": "uint256",
-                                "name": "granularity",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "Voted",
-                        "type": "event"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "MAX_MEMBER_COUNT",
-                        "outputs": [
-                            {
-                                "internalType": "uint256",
-                                "name": "",
-                                "type": "uint256"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "bridge",
-                        "outputs": [
-                            {
-                                "internalType": "contract IBridge",
-                                "name": "",
-                                "type": "address"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "isMember",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "isOwner",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "uint256",
-                                "name": "",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "members",
-                        "outputs": [
-                            {
-                                "internalType": "address",
-                                "name": "",
-                                "type": "address"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "owner",
-                        "outputs": [
-                            {
-                                "internalType": "address",
-                                "name": "",
-                                "type": "address"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "name": "processed",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [],
-                        "name": "renounceOwnership",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "required",
-                        "outputs": [
-                            {
-                                "internalType": "uint256",
-                                "name": "",
-                                "type": "uint256"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "newOwner",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "transferOwnership",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "address",
-                                "name": "",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "votes",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "_bridge",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "setBridge",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "originalTokenAddress",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "address",
-                                "name": "receiver",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "symbol",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "blockHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "transactionHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint32",
-                                "name": "logIndex",
-                                "type": "uint32"
-                            },
-                            {
-                                "internalType": "uint8",
-                                "name": "decimals",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "granularity",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "voteTransaction",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "transactionId",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "name": "getTransactionCount",
-                        "outputs": [
-                            {
-                                "internalType": "uint256",
-                                "name": "",
-                                "type": "uint256"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "transactionId",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "name": "hasVoted",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "transactionId",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "name": "transactionWasProcessed",
-                        "outputs": [
-                            {
-                                "internalType": "bool",
-                                "name": "",
-                                "type": "bool"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "originalTokenAddress",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "address",
-                                "name": "receiver",
-                                "type": "address"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "amount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "symbol",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "blockHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "transactionHash",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint32",
-                                "name": "logIndex",
-                                "type": "uint32"
-                            },
-                            {
-                                "internalType": "uint8",
-                                "name": "decimals",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "granularity",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "getTransactionId",
-                        "outputs": [
-                            {
-                                "internalType": "bytes32",
-                                "name": "",
-                                "type": "bytes32"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "pure",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "_newMember",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "addMember",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "address",
-                                "name": "_oldMember",
-                                "type": "address"
-                            }
-                        ],
-                        "name": "removeMember",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    },
-                    {
-                        "constant": true,
-                        "inputs": [],
-                        "name": "getMembers",
-                        "outputs": [
-                            {
-                                "internalType": "address[]",
-                                "name": "",
-                                "type": "address[]"
-                            }
-                        ],
-                        "payable": false,
-                        "stateMutability": "view",
-                        "type": "function"
-                    },
-                    {
-                        "constant": false,
-                        "inputs": [
-                            {
-                                "internalType": "uint256",
-                                "name": "_required",
-                                "type": "uint256"
-                            }
-                        ],
-                        "name": "changeRequirement",
-                        "outputs": [],
-                        "payable": false,
-                        "stateMutability": "nonpayable",
-                        "type": "function"
-                    }
-                ],
-                this.federationContract.options.address
-            )
-
-            console.log({tokenAddress,
-                receiver,
-                amount,
-                symbol,
-                blockHash,
-                transactionHash,
-                logIndex,
-                decimals,
-                granularity})
-
-            console.log('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
-
-            const txObj = instance.methods.voteTransaction(
-                tokenAddress,
-                receiver,
-                amount,
-                symbol,
-                blockHash,
-                transactionHash,
-                logIndex,
-                decimals,
-                granularity
-            )
-
-            const tx = await kit.sendTransactionObject(txObj, { from: '0x3Ed68019F385A51FA92E6e1009C4Afa2e4Cc3e1F' })
-
-            console.log(await tx.waitReceipt())
-
-            return
-
+            
             let txData = await this.federationContract.methods.voteTransaction(
                 tokenAddress,
                 receiver,
@@ -855,19 +189,16 @@ module.exports = class Federator {
                 granularity
             ).encodeABI();
 
-            console.log(`${tokenAddress}, ${receiver}, ${amount}, ${symbol}, ${blockHash}, ${transactionHash}, ${logIndex}, ${decimals}, ${granularity}`)
-
             this.logger.info(`voteTransaction(${tokenAddress}, ${receiver}, ${amount}, ${symbol}, ${blockHash}, ${transactionHash}, ${logIndex}, ${decimals}, ${granularity})`);
             await transactionSender.sendTransaction(this.federationContract.options.address, txData, 0, this.config.privateKey);
             this.logger.info(`Voted transaction:${transactionHash} of block: ${blockHash} token ${symbol} to Federation Contract with TransactionId:${txId}`);
             return true;
         } catch (err) {
-            console.log(err)
-            // throw new CustomError(`Exception Voting tx:${transactionHash} block: ${blockHash} token ${symbol}`, err);
+            throw new CustomError(`Exception Voting tx:${transactionHash} block: ${blockHash} token ${symbol}`, err);
         }
     }
 
-    _saveProgress(path, value) {
+    _saveProgress (path, value) {
         if (value) {
             fs.writeFileSync(path, value);
         }

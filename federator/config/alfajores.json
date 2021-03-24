@@ -1,9 +1,10 @@
 {
-    "bridge": "0x0dea70cdc84d27c973973be3aab0b003879ae3c8",
-    "federation": "0xf37f75d215030b891a82a997f5abb8e18e9beff2",
-    "multiSig": "0xc411b5d995df1b6ae73540c7c758975716c246ca",
-    "allowTokens": "0xc1fe18443310aa6fb69c40db10a56b4b70a05135",
-    "testToken": "0x7a9fcf3ad930e613ac2f08c35ff51fd216330f28",
-    "host": "https://alfajores-forno.celo-testnet.org",
-    "fromBlock": 4145063
+    "bridge": "0xcd1f1af7507aa297bf5edf27bfe89beba1a77c46",
+    "federation": "0x97cb7ec8f9b07899fc480753a1243434ad6c9b6b",
+    "multiSig": "0xb819f779b323621f41c419df640049e83c6ded74",
+    "allowTokens": "0xe4b9f62cb7830447a904384fa345b50f421f1ad4",
+    "networkName": "alfajores",
+    "testToken": "0x49ec56845dd1b42a6dd1f2092466e95a224f52cd",
+    "host": "",
+    "fromBlock": 4251130
 }

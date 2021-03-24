@@ -1,0 +1,1 @@
+module.exports = network => ['alfajores', 'baklava', 'celo'].includes(network)

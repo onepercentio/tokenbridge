@@ -3,31 +3,35 @@ const MultiSigWallet = artifacts.require("MultiSigWallet");
 const Federation = artifacts.require("Federation");
 const AllowTokens = artifacts.require('AllowTokens');
 const SideTokenFactory = artifacts.require('SideTokenFactory');
-const Bridge = artifacts.require('Bridge');
+const BridgeCelo = artifacts.require('Bridge_Celo');
 const Utils = artifacts.require("Utils");
+const isCeloNetwork = require('./isCeloNetwork')
 
 module.exports = async function (deployer, networkName, accounts) {
-    let symbol = 'e';
+  if (!isCeloNetwork(networkName)) return
 
-    if(networkName == 'rskregtest' || networkName == 'rsktestnet' || networkName == 'rskmainnet'|| networkName === 'alfajores')
-        symbol = 'r';
+  let symbol = 'e';
 
-    const multiSig = await MultiSigWallet.deployed();
-    const allowTokens = await AllowTokens.deployed();
-    const sideTokenFactory = await SideTokenFactory.deployed();
-    const federation = await Federation.deployed();
+  if (networkName == 'rskregtest' || networkName == 'rsktestnet' || networkName == 'rskmainnet' || networkName === 'alfajores')
+    symbol = 'c';
 
-    console.log('deploying utils')
-    await deployer.deploy(Utils)
+  const multiSig = await MultiSigWallet.deployed();
+  const allowTokens = await AllowTokens.deployed();
+  const sideTokenFactory = await SideTokenFactory.deployed();
+  const federation = await Federation.deployed();
 
-    console.log('linking both ...........')
-    await deployer.link(Utils, Bridge);
+  console.log('deploying utils')
+  await deployer.deploy(Utils)
 
-    let initArgs = [multiSig.address, federation.address, allowTokens.address, sideTokenFactory.address, symbol];
+  console.log('linking both ...........')
+  await deployer.link(Utils, BridgeCelo);
 
-    const instance = await deployProxy(Bridge, initArgs, { deployer, unsafeAllowLinkedLibraries: true })
+  let initArgs = [multiSig.address, federation.address, allowTokens.address, sideTokenFactory.address, symbol];
+  console.log(initArgs)
+  console.log('deploying upgradeable bridge')
+  const instance = await deployProxy(BridgeCelo, initArgs, { deployer, unsafeAllowLinkedLibraries: true })
 
-    console.log('Deployed', instance.address);
+  console.log('Deployed', instance.address);
 
 }
 

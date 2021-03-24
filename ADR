@@ -1,0 +1,10 @@
+Because it's impossible to deploy ERC1820 contracts to Celo network, we decided:
+- To use a custom deployed version of ERC1820
+- Keep the standard ERC1820 address when deploying to eth networks
+- Manually change the ERC1820 address in all contracts when deploying to Celo networks
+- Change the ERC1820 address field to be variable
+- Add a function to update the ERC1820 when it becomes available
+- When ERC1820 becomes available, we'll:
+  - upgrade the bridge contract so new side tokens will use the standard ERC1820 address
+  - update the ERC1820 address in the bridge contract
+- Old side tokens will keep using the custom ERC1820

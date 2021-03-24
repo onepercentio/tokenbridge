@@ -20,14 +20,14 @@ import "./ISideTokenFactory.sol";
 import "./AllowTokens.sol";
 import "./Utils.sol";
 
-contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable, UpgradableOwnable, ReentrancyGuard {
+contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePausable, UpgradableOwnable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     using Address for address;
 
     address constant private NULL_ADDRESS = address(0);
     bytes32 constant private NULL_HASH = bytes32(0);
-    IERC1820Registry constant public erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    IERC1820Registry public erc1820;
 
     address private federation;
     uint256 private feePercentage;
@@ -63,8 +63,6 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
         allowTokens = AllowTokens(_allowTokens);
         _changeSideTokenFactory(_sideTokenFactory);
         _changeFederation(_federation);
-        //keccak256("ERC777TokensRecipient")
-        erc1820.setInterfaceImplementer(address(this), 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b, address(this));
     }
 
     function version() external pure returns (string memory) {
@@ -79,6 +77,14 @@ contract Bridge is Initializable, IBridge, IERC777Recipient, UpgradablePausable,
     modifier whenNotUpgrading() {
         require(!isUpgrading, "Bridge: Upgrading");
         _;
+    }
+
+    function changeERC1820Address(address _newAddress) external onlyOwner {
+        require(_newAddress != NULL_ADDRESS, "Bridge: invalid ERC1820 address");
+
+        erc1820 = IERC1820Registry(_newAddress);
+        //keccak256("ERC777TokensRecipient")
+        erc1820.setInterfaceImplementer(address(this), 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b, address(this));
     }
 
     function acceptTransfer(

@@ -1,4 +1,4 @@
-// deployer 0x3Ed68019F385A51FA92E6e1009C4Afa2e4Cc3e1F
+// deployer 0xE42DD19efaCaF0339A5634Dcdf563754E7d98743
 // token 0xdCC398CEdF8Af4d30698331fd571aE66FfF6fdFf
 // allowed 0x47d6603840D765aa092F80c98af9Ed2464ab2C07
 // bridge 0x3dc71bf336d5d9680713248b0e1443b3f796969c
@@ -9,17 +9,21 @@ multisig = await MultiSigWallet.deployed()
 bridge = await Bridge.deployed()
 token = await MainToken.deployed()
 
-allowData = (await allowTokens.addAllowedToken.request('0xdCC398CEdF8Af4d30698331fd571aE66FfF6fdFf')).data
+allowData = (await allowTokens.addAllowedToken.request(token.address)).data
 
-await multisig.submitTransaction('0x47d6603840D765aa092F80c98af9Ed2464ab2C07', 0, allowData)
+await multisig.submitTransaction(allowTokens.address, 0, allowData)
 
-await allowed.isTokenAllowed('0xdCC398CEdF8Af4d30698331fd571aE66FfF6fdFf') // true
+await allowTokens.isTokenAllowed(token.address)
+// true
 
 token = await MainToken.deployed()
 
-(await token.balanceOf('0x3Ed68019F385A51FA92E6e1009C4Afa2e4Cc3e1F')).toString() // 1000000000000000000000
+(await token.balanceOf('0xE42DD19efaCaF0339A5634Dcdf563754E7d98743')).toString()
+// 1000000000000000000000
 
-await bridge.receiveTokens('0xdCC398CEdF8Af4d30698331fd571aE66FfF6fdFf', '1000000000000000000')
+await token.approve(bridge.address, '1000000000000000000000')
+
+await bridge.receiveTokens(token.address, '1000000000000000000')
 
 // config federator
 // celo https://alfajores-forno.celo-testnet.org
