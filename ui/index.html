@@ -833,7 +833,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Connect wallet</h5>
+                        <h5 class="modal-title"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -1196,26 +1196,14 @@
                         approveSpend();
                     });
 
+                    const showModal = (title, message) => {
+                        $('#myModal .modal-title').html(title)
+                        $('#myModal .modal-body').html(`<p>${message}</p>`)
+                        $('#myModal').modal('show')
+                    }
+
                     $('#changeNetwork').on('click', function() {
-                        if(config) {
-                            var connectToNetwork = '';
-                            if(isTestnet) {
-                                if(config.crossToNetwork.networkId == 42) {
-                                    connectToNetwork = 'Ethereum Kovan';
-                                } else {
-                                    connectToNetwork = 'RSK Testnet';
-                                }
-                            } else {
-                                if(config.crossToNetwork.networkId == 1) {
-                                    connectToNetwork = 'Ethereum Mainnet';
-                                } else {
-                                    connectToNetwork = 'RSK Mainnet';
-                                }
-                            }
-                            updateNetworkConfig(config.crossToNetwork);
-                            var err = new Error(`Switch the Network.<br /> Please connect your wallet to <b>${connectToNetwork}</b>`);
-                            onMetaMaskConnectionError(err);
-                        }
+                        showModal('Operation not Available', 'This operation is unavailable until Celo Donut Fork.')
                     });
                     updateTokenListTab();
                     // isInstalled(); - uncomment to show popup on page load
@@ -1721,8 +1709,7 @@
                 }
 
                 function onMetaMaskConnectionError(err) {
-                    $('#myModal .modal-body').html(`<p>${err.message}</p>`);
-                    $('#myModal').modal('show');
+                    showModal('Connect wallet', $err.message)
                     $('#logIn').attr('onclick', 'onLogInClick()');
                     $('#logIn').text('Connect wallet');
                     $('#logIn').show();
