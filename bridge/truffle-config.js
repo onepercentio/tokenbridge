@@ -22,19 +22,13 @@ const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
 const kit = ContractKit.newKitFromWeb3(web3)
 // const kit = Kit.newKit('https://forno.celo.org') // mainnet endpoint
 
-const getAccount = require('./getAccount').getAccount
 let MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+const PRIVATE_KEY = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 
-async function awaitWrapper(){
-  // let account = await getAccount()
-  // console.log(`Account address: ${account.address}`)
-  console.log('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd')
-  kit.addAccount('0xfb7bacb863436010ff2e5d9a8363e62f0ec353ff55a6e552675b6a7ec2faa5bd')
-}
-
-awaitWrapper()
-
+const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY)
+console.log(`Account address: ${account.address}`)
+kit.addAccount(account.privateKey)
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>

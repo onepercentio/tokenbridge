@@ -26,7 +26,7 @@ const sideFederator = new Federator({
     storagePath: `${config.storagePath}/side-fed`
 }, log4js.getLogger('SIDE-FEDERATOR'));
 
-let pollingInterval = config.runEvery * 1000 * 60; // Minutes
+let pollingInterval = config.runEvery * 1000 * 10; // Minutes
 let scheduler = new Scheduler(pollingInterval, logger, { run: () => run() });
 
 scheduler.start().catch((err) => {

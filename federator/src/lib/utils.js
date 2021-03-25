@@ -101,5 +101,6 @@ module.exports = {
     memoryUsage: memoryUsage,
     calculatePrefixesSuffixes: calculatePrefixesSuffixes,
     zeroHash: '0x0000000000000000000000000000000000000000000000000000000000000000',
-    waitForReceipt: waitForReceipt
+    waitForReceipt: waitForReceipt,
+    isCeloNetwork: network => ['alfajores', 'baklava', 'celo'].includes(network)
 }

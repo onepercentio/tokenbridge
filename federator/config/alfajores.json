@@ -5,6 +5,6 @@
     "allowTokens": "0xe4b9f62cb7830447a904384fa345b50f421f1ad4",
     "networkName": "alfajores",
     "testToken": "0x49ec56845dd1b42a6dd1f2092466e95a224f52cd",
-    "host": "",
+    "host": "https://alfajores-forno.celo-testnet.org",
     "fromBlock": 4251130
 }

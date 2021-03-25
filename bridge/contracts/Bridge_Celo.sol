@@ -63,6 +63,10 @@ contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePaus
         allowTokens = AllowTokens(_allowTokens);
         _changeSideTokenFactory(_sideTokenFactory);
         _changeFederation(_federation);
+
+        erc1820 = IERC1820Registry('');
+        //keccak256("ERC777TokensRecipient")
+        erc1820.setInterfaceImplementer(address(this), 0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b, address(this));
     }
 
     function version() external pure returns (string memory) {

@@ -1,9 +1,10 @@
-
 const Tx = require('ethereumjs-tx');
 const ethUtils = require('ethereumjs-util');
+const { newKit } = require('@celo/contractkit')
 const utils = require('./utils');
 const CustomError = require('./CustomError');
 const fs = require('fs');
+const abiFederation = require('../../../abis/Federation.json');
 
 module.exports = class TransactionSender {
     constructor(client, logger, config) {
@@ -124,6 +125,51 @@ module.exports = class TransactionSender {
         }
         this.logger.error(error, errorInfo);
         this.logger.error('RawTx that failed', rawTx);
+        throw new CustomError(`Transaction Failed: ${error} ${stack}`, errorInfo);
+    }
+
+    async sendTransactionToCelo(to, params, method, privateKey, host) {
+        const stack = new Error().stack;
+        let txHash;
+        let tx;
+        let error = '';
+        let errorInfo = '';
+
+        const from = await this.getAddress(privateKey);
+        console.log('FROM', from)
+        console.log('TO', to)
+        const kit = newKit(host)
+        kit.connection.addAccount(privateKey)
+    
+        try {
+            let receipt;
+            const instance = await new kit.web3.eth.Contract(abiFederation, to)
+            const txObj = await instance.methods[method](...params)
+            console.log('WILL SEND TRANSACTION --------------------------')
+            tx = await kit.sendTransactionObject(txObj, { from })
+            console.log('TRANSACTION WAS SENT --------------------------')
+            txHash = await tx.getHash()
+            receipt = await tx.waitReceipt()
+            console.log(receipt.events.Voted)
+
+            if(receipt.status == 1) {
+                this.logger.info(`Transaction Successful txHash: ${receipt.transactionHash} blockNumber:${receipt.blockNumber}`);
+                return receipt;
+            }
+            error = 'Transaction Receipt Status Failed';
+            errorInfo = receipt;
+        } catch(err) {
+            if (err.message.indexOf('it might still be mined') > 0) {
+                this.logger.warn(`Transaction was not mined within 750 seconds, please make sure your transaction was properly sent. Be aware that
+                it might still be mined. transactionHash:${txHash}`);
+                fs.appendFileSync(this.manuallyCheck, `transactionHash: ${txHash} to: ${to} tx: ${tx}\n`);
+                return { transactionHash: txHash };
+            }
+            error = `Send Signed Transaction Failed TxHash:${txHash}`;
+            errorInfo = err;
+        }
+        this.logger.error(error, errorInfo);
+        this.logger.error('tx that failed', tx);
         throw new CustomError(`Transaction Failed: ${error} ${stack}`, errorInfo);
     }
 
