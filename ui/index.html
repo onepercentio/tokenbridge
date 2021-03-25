@@ -1511,9 +1511,12 @@
                             bridgeContract.methods
                                 .receiveTokens(tokenContract.options.address, amountBN.toString())
                                 .send({from: address, gasPrice:gasPrice, gas:200_000}, async (err, txHash) => {
+                                    console.log(err)
+                                    console.log(txHash)
                                 if (err) return reject(err);
                                 try {
                                     let receipt = await waitForReceipt(txHash);
+                                    console.log(receipt)
 
                                     disableApproveCross({
                                         approvalDisable: true,
@@ -1537,6 +1540,8 @@
                         $('#success').show();
                         disableInputs(false);
 
+                        console.log('Before adding reciept to storage', TXN_Storage)
+
                         // save transaction to local storage...
                         TXN_Storage.addTxn(address, config.name, {
                             networkId: config.networkId,
@@ -1546,6 +1551,7 @@
                             ...receipt
                         });
 
+                        console.log('After adding receipt to storage', TXN_Storage)
                         updateActiveAddressTXNs(address);
                         showActiveTxnsTab();
                         showActiveAddressTXNs();
@@ -2083,9 +2089,9 @@
                 let KOVAN_CONFIG = {
                     networkId: 42,
                     name: 'Ethereum Kovan',
-                    bridge: '0x2ae2a5f07f081e43f2e4e87328474f9301bc2ce8',
-                    allowTokens: '0xfb15eda0d7f31e08fd3c4f04007976dbe1985f4e',
-                    federation: '0xa4b1f80872763392e144213a8dfa5da271e94e58',
+                    bridge: '0x2a526cec72ad126b761266584c0d3bec1ad8484a',
+                    allowTokens: '0x9e6ec285aecfaad6448bda8578c69cff3090e4ab',
+                    federation: '0x75435232dc2e40ba5911f06ca03a42125e5a0211',
                     explorer: 'https://kovan.etherscan.io',
                     explorerTokenTab: '#tokentxns',
                     confirmations: 10,
@@ -2108,9 +2114,9 @@
                 let CELO_ALFAJORES = {
                     networkId: 44787,
                     name: 'Celo Alfajores',
-                    bridge: '0xcd1f1af7507aa297bf5edf27bfe89beba1a77c46',
-                    allowTokens: '0xe4b9f62cb7830447a904384fa345b50f421f1ad4',
-                    federation: '0x97cb7ec8f9b07899fc480753a1243434ad6c9b6b',
+                    bridge: '0x77eb086abd8abdeceb266b7cfa4a0965c9e7c544',
+                    allowTokens: '0xcc9b5945a127cc147fceb13970a146005451f683',
+                    federation: '0x2ad0dc5ed58d9112ed10f4d4c7600a92993c1310',
                     explorer: 'https://alfajores-blockscout.celo-testnet.org/',
                     explorerTokenTab: '',
                     confirmations: 10,
@@ -2173,9 +2179,9 @@
                     42:{symbol:'DAI', address:'0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa', decimals:18}
                 };
 
-                const MAIN_TOKEN = { token: 'MCO2', name: 'MCO2 Token', icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8826.png',
-                    42: { symbol: 'MCO2', address: '0x08c80fad04841ea49ac1b54e5c6079235f9d3cb8', decimals: 18},
-                    44878: { symbol: 'cMCO2', address: '0x08c80fad04841ea49ac1b54e5c6079235f9d3cb8', decimals: 18}
+                const MAIN_TOKEN = { token: 'MAIN', name: 'MCO2 Token', icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8826.png',
+                    42: { symbol: 'MAIN', address: '0x2025a7f004013b653b2fc3afb755230e440c5aa2', decimals: 18},
+                    44787: { symbol: 'cMAIN', address: '0x89c5608bd1563bf5d50addd262b1112e0b0b7950', decimals: 18}
                 }
 
                 // Remove INV token because its paused on mainnet
