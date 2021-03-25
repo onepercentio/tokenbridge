@@ -81,7 +81,7 @@ module.exports = class Federator {
                 fromBlock = parseInt(fromBlock) + 1;
                 this.logger.debug('Running from Block', fromBlock);
 
-                const recordsPerPage = 1000;
+                const recordsPerPage = 3000;
                 const numberOfPages = Math.ceil((toBlock - fromBlock) / recordsPerPage);
                 this.logger.debug(`Total pages ${numberOfPages}, blocks per page ${recordsPerPage}`);
 

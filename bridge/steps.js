@@ -6,7 +6,7 @@
 
 allowTokens = await AllowTokens.deployed()
 multisig = await MultiSigWallet.deployed()
-// bridge = await Bridge.deployed()
+bridge = await Bridge.deployed()
 bridge = await Bridge_Celo.deployed()
 token = await MainToken.deployed()
 

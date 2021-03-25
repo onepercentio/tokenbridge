@@ -39,6 +39,7 @@ module.exports = function (deployer, networkName, accounts) {
                 networkName
             };
             if (shouldDeployToken(networkName)) {
+                console.log('TOKEN CONFIG ------')
                 const mainToken = await MainToken.deployed();
                 config.testToken = mainToken.address.toLowerCase();
                 let data = allowTokens.contract.methods.addAllowedToken(mainToken.address).encodeABI();
