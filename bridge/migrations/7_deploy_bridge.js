@@ -27,7 +27,6 @@ module.exports = async function (deployer, networkName, accounts) {
     await deployer.link(Utils, Bridge);
 
     let initArgs = [multiSig.address, federation.address, allowTokens.address, sideTokenFactory.address, symbol];
-    console.log(initArgs)
     console.log('deploying upgradeable bridge')
     const instance = await deployProxy(Bridge, initArgs, { deployer, unsafeAllowLinkedLibraries: true })
 

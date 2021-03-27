@@ -2,7 +2,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades')
 const MultiSigWallet = artifacts.require("MultiSigWallet");
 const Federation = artifacts.require("Federation");
 const AllowTokens = artifacts.require('AllowTokens');
-const SideTokenFactory = artifacts.require('SideTokenFactory');
+const ControlledSideTokenFactory = artifacts.require('ControlledSideTokenFactory');
 const BridgeCelo = artifacts.require('Bridge_Celo');
 const Utils = artifacts.require("Utils");
 const isCeloNetwork = require('./isCeloNetwork')
@@ -17,7 +17,7 @@ module.exports = async function (deployer, networkName, accounts) {
 
   const multiSig = await MultiSigWallet.deployed();
   const allowTokens = await AllowTokens.deployed();
-  const sideTokenFactory = await SideTokenFactory.deployed();
+  const sideTokenFactory = await ControlledSideTokenFactory.deployed();
   const federation = await Federation.deployed();
 
   console.log('deploying utils')

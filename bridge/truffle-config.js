@@ -40,7 +40,8 @@ module.exports = {
       port: 8545,
       network_id: "*",
       gas: 6300000,
-      gasPrice: 20000000000
+      gasPrice: 1000000000,
+      from: '0x3Ed68019F385A51FA92E6e1009C4Afa2e4Cc3e1F'
     },
     //RSK
     rskregtest: {
