@@ -10,10 +10,7 @@ const isCeloNetwork = require('./isCeloNetwork')
 module.exports = async function (deployer, networkName, accounts) {
   if (!isCeloNetwork(networkName)) return
 
-  let symbol = 'e';
-
-  if (networkName == 'rskregtest' || networkName == 'rsktestnet' || networkName == 'rskmainnet' || networkName === 'alfajores')
-    symbol = 'c';
+  let symbol = 'c';
 
   const multiSig = await MultiSigWallet.deployed();
   const allowTokens = await AllowTokens.deployed();

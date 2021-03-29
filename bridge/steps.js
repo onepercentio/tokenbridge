@@ -69,9 +69,3 @@ await multisig.submitTransaction(sidetoken.address, 0, transferData)
 token = await MainToken.deployed()
 
 (await token.balanceOf('0xeced3d9d7cfcf45a151311e0978269c741f3724c')).toString()
-
-// address sender,
-//   address recipient,
-//     uint256 amount,
-//       bytes calldata data,
-//         bytes calldata operatorData
