@@ -32,4 +32,4 @@ fi
 
 echo "Starting our own ganache instance"
 start_ganache
-node_modules/.bin/truffle test "$@" --verbose --show-events --compile-none
+node_modules/.bin/truffle test "$@" --verbose --show-events

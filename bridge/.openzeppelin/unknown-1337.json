@@ -383,7 +383,7 @@
           {
             "contract": "UpgradablePauserRole",
             "label": "_pausers",
-            "type": "t_struct(Role)6355_storage",
+            "type": "t_struct(Role)6375_storage",
             "src": "zeppelin/upgradable/access/roles/UpgradablePauserRole.sol:14"
           },
           {
@@ -437,7 +437,7 @@
           {
             "contract": "Bridge",
             "label": "mappedTokens",
-            "type": "t_mapping(t_address,t_contract(ISideToken)4193)",
+            "type": "t_mapping(t_address,t_contract(ISideToken)4213)",
             "src": "Bridge.sol:38"
           },
           {
@@ -467,7 +467,7 @@
           {
             "contract": "Bridge",
             "label": "sideTokenFactory",
-            "type": "t_contract(ISideTokenFactory)4215",
+            "type": "t_contract(ISideTokenFactory)4235",
             "src": "Bridge.sol:43"
           },
           {
@@ -493,10 +493,10 @@
           "t_string_storage": {
             "label": "string"
           },
-          "t_mapping(t_address,t_contract(ISideToken)4193)": {
+          "t_mapping(t_address,t_contract(ISideToken)4213)": {
             "label": "mapping(address => contract ISideToken)"
           },
-          "t_contract(ISideToken)4193": {
+          "t_contract(ISideToken)4213": {
             "label": "contract ISideToken"
           },
           "t_mapping(t_address,t_address)": {
@@ -517,10 +517,10 @@
           "t_contract(AllowTokens)378": {
             "label": "contract AllowTokens"
           },
-          "t_contract(ISideTokenFactory)4215": {
+          "t_contract(ISideTokenFactory)4235": {
             "label": "contract ISideTokenFactory"
           },
-          "t_struct(Role)6355_storage": {
+          "t_struct(Role)6375_storage": {
             "label": "struct Roles.Role",
             "members": [
               {
@@ -712,10 +712,722 @@
           }
         }
       }
+    },
+    "9716914ebf2bec0a8af3cca1b5bb7aa1c55d19e998a47debfeef7d3e8b5ae868": {
+      "address": "0x14B82b810FA729dC75d95a65aae3AC3467937D72",
+      "txHash": "0xa630f4ca8a4739f63f31463e9fc10cde2d62a60f7a8b27fc3a49689d28b370f8",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "zeppelin/upgradable/Initializable.sol:60"
+          },
+          {
+            "contract": "UpgradablePauserRole",
+            "label": "_pausers",
+            "type": "t_struct(Role)6355_storage",
+            "src": "zeppelin/upgradable/access/roles/UpgradablePauserRole.sol:14"
+          },
+          {
+            "contract": "UpgradablePausable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/lifecycle/UpgradablePausable.sol:28"
+          },
+          {
+            "contract": "UpgradableOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "zeppelin/upgradable/ownership/UpgradableOwnable.sol:17"
+          },
+          {
+            "contract": "ReentrancyGuard",
+            "label": "_guardCounter",
+            "type": "t_uint256",
+            "src": "zeppelin/upgradable/utils/ReentrancyGuard.sol:13"
+          },
+          {
+            "contract": "Bridge",
+            "label": "federation",
+            "type": "t_address",
+            "src": "Bridge.sol:32"
+          },
+          {
+            "contract": "Bridge",
+            "label": "feePercentage",
+            "type": "t_uint256",
+            "src": "Bridge.sol:33"
+          },
+          {
+            "contract": "Bridge",
+            "label": "symbolPrefix",
+            "type": "t_string_storage",
+            "src": "Bridge.sol:34"
+          },
+          {
+            "contract": "Bridge",
+            "label": "lastDay",
+            "type": "t_uint256",
+            "src": "Bridge.sol:35"
+          },
+          {
+            "contract": "Bridge",
+            "label": "spentToday",
+            "type": "t_uint256",
+            "src": "Bridge.sol:36"
+          },
+          {
+            "contract": "Bridge",
+            "label": "mappedTokens",
+            "type": "t_mapping(t_address,t_contract(ISideToken)4193)",
+            "src": "Bridge.sol:38"
+          },
+          {
+            "contract": "Bridge",
+            "label": "originalTokens",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "Bridge.sol:39"
+          },
+          {
+            "contract": "Bridge",
+            "label": "knownTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "Bridge.sol:40"
+          },
+          {
+            "contract": "Bridge",
+            "label": "processed",
+            "type": "t_mapping(t_bytes32,t_bool)",
+            "src": "Bridge.sol:41"
+          },
+          {
+            "contract": "Bridge",
+            "label": "allowTokens",
+            "type": "t_contract(AllowTokens)378",
+            "src": "Bridge.sol:42"
+          },
+          {
+            "contract": "Bridge",
+            "label": "sideTokenFactory",
+            "type": "t_contract(ISideTokenFactory)4215",
+            "src": "Bridge.sol:43"
+          },
+          {
+            "contract": "Bridge",
+            "label": "isUpgrading",
+            "type": "t_bool",
+            "src": "Bridge.sol:45"
+          },
+          {
+            "contract": "Bridge",
+            "label": "alreadyRun",
+            "type": "t_bool",
+            "src": "Bridge.sol:47"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_address,t_contract(ISideToken)4193)": {
+            "label": "mapping(address => contract ISideToken)"
+          },
+          "t_contract(ISideToken)4193": {
+            "label": "contract ISideToken"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_contract(AllowTokens)378": {
+            "label": "contract AllowTokens"
+          },
+          "t_contract(ISideTokenFactory)4215": {
+            "label": "contract ISideTokenFactory"
+          },
+          "t_struct(Role)6355_storage": {
+            "label": "struct Roles.Role",
+            "members": [
+              {
+                "label": "bearer",
+                "type": "t_mapping(t_address,t_bool)"
+              }
+            ]
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "6a64a3a982c2282e585eded1f45f1f25a30332e92ccbac387818b86bba3a7ea3": {
+      "address": "0xC481B590cbA16Ef8114e6DDf7B5cfC30D39b0847",
+      "txHash": "0xaa54c56257889d8cbb4aac03227f2f00cd0eb4224cead5fce10d6d2dcd8a7898",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "zeppelin/upgradable/Initializable.sol:60"
+          },
+          {
+            "contract": "UpgradablePauserRole",
+            "label": "_pausers",
+            "type": "t_struct(Role)6355_storage",
+            "src": "zeppelin/upgradable/access/roles/UpgradablePauserRole.sol:14"
+          },
+          {
+            "contract": "UpgradablePausable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/lifecycle/UpgradablePausable.sol:28"
+          },
+          {
+            "contract": "UpgradableOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "zeppelin/upgradable/ownership/UpgradableOwnable.sol:17"
+          },
+          {
+            "contract": "ReentrancyGuard",
+            "label": "_guardCounter",
+            "type": "t_uint256",
+            "src": "zeppelin/upgradable/utils/ReentrancyGuard.sol:13"
+          },
+          {
+            "contract": "Bridge",
+            "label": "federation",
+            "type": "t_address",
+            "src": "Bridge.sol:32"
+          },
+          {
+            "contract": "Bridge",
+            "label": "feePercentage",
+            "type": "t_uint256",
+            "src": "Bridge.sol:33"
+          },
+          {
+            "contract": "Bridge",
+            "label": "symbolPrefix",
+            "type": "t_string_storage",
+            "src": "Bridge.sol:34"
+          },
+          {
+            "contract": "Bridge",
+            "label": "lastDay",
+            "type": "t_uint256",
+            "src": "Bridge.sol:35"
+          },
+          {
+            "contract": "Bridge",
+            "label": "spentToday",
+            "type": "t_uint256",
+            "src": "Bridge.sol:36"
+          },
+          {
+            "contract": "Bridge",
+            "label": "mappedTokens",
+            "type": "t_mapping(t_address,t_contract(ISideToken)4193)",
+            "src": "Bridge.sol:38"
+          },
+          {
+            "contract": "Bridge",
+            "label": "originalTokens",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "Bridge.sol:39"
+          },
+          {
+            "contract": "Bridge",
+            "label": "knownTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "Bridge.sol:40"
+          },
+          {
+            "contract": "Bridge",
+            "label": "processed",
+            "type": "t_mapping(t_bytes32,t_bool)",
+            "src": "Bridge.sol:41"
+          },
+          {
+            "contract": "Bridge",
+            "label": "allowTokens",
+            "type": "t_contract(AllowTokens)378",
+            "src": "Bridge.sol:42"
+          },
+          {
+            "contract": "Bridge",
+            "label": "sideTokenFactory",
+            "type": "t_contract(ISideTokenFactory)4215",
+            "src": "Bridge.sol:43"
+          },
+          {
+            "contract": "Bridge",
+            "label": "isUpgrading",
+            "type": "t_bool",
+            "src": "Bridge.sol:45"
+          },
+          {
+            "contract": "Bridge",
+            "label": "alreadyRun",
+            "type": "t_bool",
+            "src": "Bridge.sol:47"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_address,t_contract(ISideToken)4193)": {
+            "label": "mapping(address => contract ISideToken)"
+          },
+          "t_contract(ISideToken)4193": {
+            "label": "contract ISideToken"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_contract(AllowTokens)378": {
+            "label": "contract AllowTokens"
+          },
+          "t_contract(ISideTokenFactory)4215": {
+            "label": "contract ISideTokenFactory"
+          },
+          "t_struct(Role)6355_storage": {
+            "label": "struct Roles.Role",
+            "members": [
+              {
+                "label": "bearer",
+                "type": "t_mapping(t_address,t_bool)"
+              }
+            ]
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "71734c0796061ba7637c909b7de9d75bc1d0c789127aa0ee8f868caa258b4717": {
+      "address": "0xCd3BF4dd22cCF1C5cd731EdAE632BC9418c30599",
+      "txHash": "0x646ffcc5e96cfb3519ff5df2a8f0c442e1d3e9b12b6d9606aa9d03f8e170a97e",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "zeppelin/upgradable/Initializable.sol:60"
+          },
+          {
+            "contract": "UpgradablePauserRole",
+            "label": "_pausers",
+            "type": "t_struct(Role)6355_storage",
+            "src": "zeppelin/upgradable/access/roles/UpgradablePauserRole.sol:14"
+          },
+          {
+            "contract": "UpgradablePausable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/lifecycle/UpgradablePausable.sol:28"
+          },
+          {
+            "contract": "UpgradableOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "zeppelin/upgradable/ownership/UpgradableOwnable.sol:17"
+          },
+          {
+            "contract": "ReentrancyGuard",
+            "label": "_guardCounter",
+            "type": "t_uint256",
+            "src": "zeppelin/upgradable/utils/ReentrancyGuard.sol:13"
+          },
+          {
+            "contract": "Bridge",
+            "label": "federation",
+            "type": "t_address",
+            "src": "Bridge.sol:32"
+          },
+          {
+            "contract": "Bridge",
+            "label": "feePercentage",
+            "type": "t_uint256",
+            "src": "Bridge.sol:33"
+          },
+          {
+            "contract": "Bridge",
+            "label": "symbolPrefix",
+            "type": "t_string_storage",
+            "src": "Bridge.sol:34"
+          },
+          {
+            "contract": "Bridge",
+            "label": "lastDay",
+            "type": "t_uint256",
+            "src": "Bridge.sol:35"
+          },
+          {
+            "contract": "Bridge",
+            "label": "spentToday",
+            "type": "t_uint256",
+            "src": "Bridge.sol:36"
+          },
+          {
+            "contract": "Bridge",
+            "label": "mappedTokens",
+            "type": "t_mapping(t_address,t_contract(ISideToken)4193)",
+            "src": "Bridge.sol:38"
+          },
+          {
+            "contract": "Bridge",
+            "label": "originalTokens",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "Bridge.sol:39"
+          },
+          {
+            "contract": "Bridge",
+            "label": "knownTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "Bridge.sol:40"
+          },
+          {
+            "contract": "Bridge",
+            "label": "processed",
+            "type": "t_mapping(t_bytes32,t_bool)",
+            "src": "Bridge.sol:41"
+          },
+          {
+            "contract": "Bridge",
+            "label": "allowTokens",
+            "type": "t_contract(AllowTokens)378",
+            "src": "Bridge.sol:42"
+          },
+          {
+            "contract": "Bridge",
+            "label": "sideTokenFactory",
+            "type": "t_contract(ISideTokenFactory)4215",
+            "src": "Bridge.sol:43"
+          },
+          {
+            "contract": "Bridge",
+            "label": "isUpgrading",
+            "type": "t_bool",
+            "src": "Bridge.sol:45"
+          },
+          {
+            "contract": "Bridge",
+            "label": "alreadyRun",
+            "type": "t_bool",
+            "src": "Bridge.sol:47"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_address,t_contract(ISideToken)4193)": {
+            "label": "mapping(address => contract ISideToken)"
+          },
+          "t_contract(ISideToken)4193": {
+            "label": "contract ISideToken"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_contract(AllowTokens)378": {
+            "label": "contract AllowTokens"
+          },
+          "t_contract(ISideTokenFactory)4215": {
+            "label": "contract ISideTokenFactory"
+          },
+          "t_struct(Role)6355_storage": {
+            "label": "struct Roles.Role",
+            "members": [
+              {
+                "label": "bearer",
+                "type": "t_mapping(t_address,t_bool)"
+              }
+            ]
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
+    },
+    "0431a59d878e73f06f039cc62c5b3af50015571b9507989ca78050dc733b5996": {
+      "address": "0x37E2ecEBBB91B1ec8cf47c7896250EF880781A61",
+      "txHash": "0xa821875c655fa573d8772f439fbdc0583019fa05b7a5a4b4038c5f43b1c02d63",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "initialized",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:21"
+          },
+          {
+            "contract": "Initializable",
+            "label": "initializing",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/Initializable.sol:26"
+          },
+          {
+            "contract": "Initializable",
+            "label": "______gap",
+            "type": "t_array(t_uint256)50_storage",
+            "src": "zeppelin/upgradable/Initializable.sol:60"
+          },
+          {
+            "contract": "UpgradablePauserRole",
+            "label": "_pausers",
+            "type": "t_struct(Role)6355_storage",
+            "src": "zeppelin/upgradable/access/roles/UpgradablePauserRole.sol:14"
+          },
+          {
+            "contract": "UpgradablePausable",
+            "label": "_paused",
+            "type": "t_bool",
+            "src": "zeppelin/upgradable/lifecycle/UpgradablePausable.sol:28"
+          },
+          {
+            "contract": "UpgradableOwnable",
+            "label": "_owner",
+            "type": "t_address",
+            "src": "zeppelin/upgradable/ownership/UpgradableOwnable.sol:17"
+          },
+          {
+            "contract": "ReentrancyGuard",
+            "label": "_guardCounter",
+            "type": "t_uint256",
+            "src": "zeppelin/upgradable/utils/ReentrancyGuard.sol:13"
+          },
+          {
+            "contract": "Bridge",
+            "label": "federation",
+            "type": "t_address",
+            "src": "Bridge.sol:32"
+          },
+          {
+            "contract": "Bridge",
+            "label": "feePercentage",
+            "type": "t_uint256",
+            "src": "Bridge.sol:33"
+          },
+          {
+            "contract": "Bridge",
+            "label": "symbolPrefix",
+            "type": "t_string_storage",
+            "src": "Bridge.sol:34"
+          },
+          {
+            "contract": "Bridge",
+            "label": "lastDay",
+            "type": "t_uint256",
+            "src": "Bridge.sol:35"
+          },
+          {
+            "contract": "Bridge",
+            "label": "spentToday",
+            "type": "t_uint256",
+            "src": "Bridge.sol:36"
+          },
+          {
+            "contract": "Bridge",
+            "label": "mappedTokens",
+            "type": "t_mapping(t_address,t_contract(ISideToken)4193)",
+            "src": "Bridge.sol:38"
+          },
+          {
+            "contract": "Bridge",
+            "label": "originalTokens",
+            "type": "t_mapping(t_address,t_address)",
+            "src": "Bridge.sol:39"
+          },
+          {
+            "contract": "Bridge",
+            "label": "knownTokens",
+            "type": "t_mapping(t_address,t_bool)",
+            "src": "Bridge.sol:40"
+          },
+          {
+            "contract": "Bridge",
+            "label": "processed",
+            "type": "t_mapping(t_bytes32,t_bool)",
+            "src": "Bridge.sol:41"
+          },
+          {
+            "contract": "Bridge",
+            "label": "allowTokens",
+            "type": "t_contract(AllowTokens)378",
+            "src": "Bridge.sol:42"
+          },
+          {
+            "contract": "Bridge",
+            "label": "sideTokenFactory",
+            "type": "t_contract(ISideTokenFactory)4215",
+            "src": "Bridge.sol:43"
+          },
+          {
+            "contract": "Bridge",
+            "label": "isUpgrading",
+            "type": "t_bool",
+            "src": "Bridge.sol:45"
+          },
+          {
+            "contract": "Bridge",
+            "label": "alreadyRun",
+            "type": "t_bool",
+            "src": "Bridge.sol:47"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_address,t_contract(ISideToken)4193)": {
+            "label": "mapping(address => contract ISideToken)"
+          },
+          "t_contract(ISideToken)4193": {
+            "label": "contract ISideToken"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)"
+          },
+          "t_bytes32": {
+            "label": "bytes32"
+          },
+          "t_contract(AllowTokens)378": {
+            "label": "contract AllowTokens"
+          },
+          "t_contract(ISideTokenFactory)4215": {
+            "label": "contract ISideTokenFactory"
+          },
+          "t_struct(Role)6355_storage": {
+            "label": "struct Roles.Role",
+            "members": [
+              {
+                "label": "bearer",
+                "type": "t_mapping(t_address,t_bool)"
+              }
+            ]
+          },
+          "t_array(t_uint256)50_storage": {
+            "label": "uint256[50]"
+          }
+        }
+      }
     }
   },
   "admin": {
-    "address": "0x9AD6E40E6620475D9a2001f16a9f710859f40D9D",
-    "txHash": "0x48caafebc3c480da177236657362f746b54ce312ee7b7ab077448b3e9d4f3faa"
+    "address": "0xe0ac8cacdCa55fc9c49b5DD54F7282456E3dBFb4",
+    "txHash": "0x057d3cfcc8a79f73214ba295c156325b1a1a9a54170fa472549525d52febaa01"
   }
 }

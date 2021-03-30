@@ -8,7 +8,7 @@ contract('SideTokenFactory', async function (accounts) {
   const anAccount = accounts[1];
   const tokenOwner = accounts[0];
 
-  describe.only('wrapper', () => {
+  describe('wrapper', () => {
 
     beforeEach(async function () {
       this.sideTokenFactory = await SideTokenFactory.new(tokenOwner);

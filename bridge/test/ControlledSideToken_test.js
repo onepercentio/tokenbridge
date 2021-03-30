@@ -1,3 +1,4 @@
+const ERC20 = artifacts.require('./ERC20');
 const SideToken = artifacts.require('./ControlledSideToken');
 const mockERC677Receiver = artifacts.require('./mockERC677Receiver');
 const mockERC777Recipient = artifacts.require('./mockERC777Recipient');
@@ -6,7 +7,7 @@ const utils = require('./utils');
 const expectThrow = utils.expectThrow;
 
 contract('ControlledSideToken', async function (accounts) {
-  const minter = accounts[0];
+  const authorized = accounts[0];
   const anAccount = accounts[1];
   const anotherAccount = accounts[2];
   const defaultOperator = accounts[3];
@@ -16,20 +17,20 @@ contract('ControlledSideToken', async function (accounts) {
     describe('constructor', async function () {
 
       it('should create side token', async function () {
-        let token = await SideToken.new("SIDE", "SIDE", minter, [defaultOperator], 1);
+        let token = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], 1);
         assert.isNotEmpty(token.address)
       });
 
-      it('should fail empty minter address', async function () {
+      it('should fail empty authorized address', async function () {
         await utils.expectThrow(SideToken.new("SIDE", "SIDE", '0x', 1));
       });
 
       it('should fail empty granularity', async function () {
-        await utils.expectThrow(SideToken.new("SIDE", "SIDE", minter, [defaultOperator], 0));
+        await utils.expectThrow(SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], 0));
       });
 
       it('should have added default operators', async function () {
-        let token = await SideToken.new("SIDE", "SIDE", minter, [defaultOperator], 1);
+        let token = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], 1);
         assert.isNotEmpty(token.address)
 
         const operators = await token.defaultOperators()
@@ -38,13 +39,54 @@ contract('ControlledSideToken', async function (accounts) {
       });
     });
 
+    describe('regarding burn restrictions', () => {
+
+      beforeEach(async () => {
+        this.token = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], 1);
+      })
+
+      it('should allow the authorized to burn its own tokens', async () => {
+        await this.token.mint(authorized, 1000000, '0x', '0x', { from: authorized });
+
+        const amount = 500000;
+        const balance = await this.token.balanceOf(authorized);
+        await this.token.burn(amount, '0x', { from: authorized });
+
+        const newBalance = await this.token.balanceOf(authorized);
+        assert.equal(Number(balance) - amount, Number(newBalance));
+      })
+
+      it('should allow a default operator to burn tokens', async () => {
+        await this.token.mint(anAccount, 1000000, '0x', '0x', { from: authorized });
+
+        const amount = 500000;
+        const balance = await this.token.balanceOf(anAccount);
+        await this.token.operatorBurn(anAccount, amount, '0x', '0x', { from: defaultOperator });
+
+        const newBalance = await this.token.balanceOf(anAccount);
+        assert.equal(Number(balance) - amount, Number(newBalance));
+      })
+
+      it('should fail if a non-authorized holder tries to burn tokens', async () => {
+        await this.token.mint(anAccount, 1000000, '0x', '0x', { from: authorized });
+
+        const amount = 500000;
+        const balance = await this.token.balanceOf(anAccount);
+        await expectThrow(this.token.burn(amount, '0x', { from: anAccount }));
+
+        const newBalance = await this.token.balanceOf(anAccount);
+        assert.equal(Number(balance), Number(newBalance));
+      })
+
+    })
+
     describe('granularity 1', async function () {
       beforeEach(async function () {
-        this.token = await SideToken.new("SIDE", "SIDE", minter, [defaultOperator], 1);
+        this.token = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], 1);
       });
 
       it('initial state', async function () {
-        const creatorBalance = await this.token.balanceOf(minter);
+        const creatorBalance = await this.token.balanceOf(authorized);
         assert.equal(creatorBalance, 0);
 
         const tokenBalance = await this.token.balanceOf(this.token.address);
@@ -61,10 +103,10 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('mint', async function () {
-        let receipt = await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        let receipt = await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
         utils.checkRcpt(receipt);
 
-        const creatorBalance = await this.token.balanceOf(minter);
+        const creatorBalance = await this.token.balanceOf(authorized);
         assert.equal(creatorBalance, 0);
 
         const tokenBalance = await this.token.balanceOf(this.token.address);
@@ -80,7 +122,7 @@ contract('ControlledSideToken', async function (accounts) {
       it('mint only default operators', async function () {
         await expectThrow(this.token.mint(anAccount, 1000, '0x', '0x', { from: anAccount }));
 
-        const creatorBalance = await this.token.balanceOf(minter);
+        const creatorBalance = await this.token.balanceOf(authorized);
         assert.equal(creatorBalance, 0);
 
         const tokenBalance = await this.token.balanceOf(this.token.address);
@@ -94,11 +136,11 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('transfer account to account', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
         let receipt = await this.token.transfer(anotherAccount, 400, { from: anAccount });
         utils.checkRcpt(receipt);
 
-        const creatorBalance = await this.token.balanceOf(minter);
+        const creatorBalance = await this.token.balanceOf(authorized);
         assert.equal(creatorBalance, 0);
 
         const tokenBalance = await this.token.balanceOf(this.token.address);
@@ -115,11 +157,11 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('operator send account to account', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
         let receipt = await this.token.operatorSend(anAccount, anotherAccount, 400, '0x', '0x', { from: defaultOperator });
         utils.checkRcpt(receipt);
 
-        const creatorBalance = await this.token.balanceOf(minter);
+        const creatorBalance = await this.token.balanceOf(authorized);
         assert.equal(creatorBalance, 0);
 
         const tokenBalance = await this.token.balanceOf(this.token.address);
@@ -136,7 +178,7 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('send to ERC777 contract', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
 
         let receiver = await mockERC777Recipient.new();
         let result = await this.token.send(receiver.address, 400, '0x000001', { from: anAccount });
@@ -201,17 +243,17 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('transferAndCall to account', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
         await expectThrow(this.token.transferAndCall(anotherAccount, 400, '0x', { from: anAccount }));
       });
 
       it('transferAndCalls to empty account', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
         await expectThrow(this.token.transferAndCall('0x', 400, '0x', { from: anAccount }));
       });
 
       it('transferAndCalls to contract', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
 
         let receiver = await mockERC677Receiver.new();
         const data = '0x000001';
@@ -255,9 +297,9 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('transferAndCalls throws if receiver does not implement IERC677Receiver', async function () {
-        await this.token.mint(anAccount, 1000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1000, '0x', '0x', { from: authorized });
 
-        let receiver = await SideToken.new("SIDE", "SIDE", minter, [defaultOperator], '1');
+        let receiver = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], '1');
         await expectThrow(this.token.transferAndCall(receiver.address, 400, '0x000001', { from: anAccount }));
       });
 
@@ -266,7 +308,7 @@ contract('ControlledSideToken', async function (accounts) {
     describe('granularity 1000', async function () {
       beforeEach(async function () {
         this.granularity = '1000';
-        this.token = await SideToken.new("SIDE", "SIDE", minter, [defaultOperator], this.granularity,);
+        this.token = await SideToken.new("SIDE", "SIDE", authorized, [defaultOperator], this.granularity,);
       });
 
       it('initial state', async function () {
@@ -275,7 +317,7 @@ contract('ControlledSideToken', async function (accounts) {
       });
 
       it('mint', async function () {
-        await this.token.mint(anAccount, this.granularity, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, this.granularity, '0x', '0x', { from: authorized });
 
         const anAccountBalance = await this.token.balanceOf(anAccount);
         assert.equal(anAccountBalance.toString(), this.granularity);
@@ -287,7 +329,7 @@ contract('ControlledSideToken', async function (accounts) {
       it('mint works if less than granularity', async function () {
         const anAccountBalance = await this.token.balanceOf(anAccount);
         const amount = 100;
-        await this.token.mint(anAccount, amount, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, amount, '0x', '0x', { from: authorized });
         const anAccountNewBalance = await this.token.balanceOf(anAccount);
         assert.equal(Number(anAccountBalance) + amount, Number(anAccountNewBalance));
       });
@@ -295,13 +337,13 @@ contract('ControlledSideToken', async function (accounts) {
       it('mint throws if not multiple of granularity', async function () {
         const anAccountBalance = await this.token.balanceOf(anAccount);
         const amount = 1001;
-        await this.token.mint(anAccount, 1001, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 1001, '0x', '0x', { from: authorized });
         const anAccountNewBalance = await this.token.balanceOf(anAccount);
         assert.equal(Number(anAccountBalance) + amount, Number(anAccountNewBalance));
       });
 
       it('transfer account to account', async function () {
-        await this.token.mint(anAccount, 10000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 10000, '0x', '0x', { from: authorized });
         await this.token.transfer(anotherAccount, 1000, { from: anAccount });
 
         const anAccountBalance = await this.token.balanceOf(anAccount);
@@ -316,7 +358,7 @@ contract('ControlledSideToken', async function (accounts) {
 
       it('transfer works if  less than granularity', async function () {
         const amount = 100;
-        await this.token.mint(anAccount, 10000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 10000, '0x', '0x', { from: authorized });
         balance = await this.token.balanceOf(anotherAccount);
         await this.token.transfer(anotherAccount, amount, { from: anAccount });
         newBalance = await this.token.balanceOf(anotherAccount);
@@ -325,7 +367,7 @@ contract('ControlledSideToken', async function (accounts) {
 
       it('transfer works if not multiple of granularity', async function () {
         const amount = 1100;
-        await this.token.mint(anAccount, 10000, '0x', '0x', { from: minter });
+        await this.token.mint(anAccount, 10000, '0x', '0x', { from: authorized });
         balance = await this.token.balanceOf(anotherAccount);
         await this.token.transfer(anotherAccount, amount, { from: anAccount });
         newBalance = await this.token.balanceOf(anotherAccount);
@@ -334,10 +376,10 @@ contract('ControlledSideToken', async function (accounts) {
 
       it('burn works if not multiple of granularity', async function () {
         const amount = 1;
-        await this.token.mint(anAccount, 1000000, '0x', '0x', { from: minter });
-        balance = await this.token.balanceOf(anAccount);
-        await this.token.burn(amount, '0x', { from: anAccount });
-        newBalance = await this.token.balanceOf(anAccount);
+        await this.token.mint(authorized, 1000000, '0x', '0x', { from: authorized });
+        balance = await this.token.balanceOf(authorized);
+        await this.token.burn(amount, '0x', { from: authorized });
+        newBalance = await this.token.balanceOf(authorized);
         assert.equal(Number(balance) - amount, Number(newBalance));
       });
     });

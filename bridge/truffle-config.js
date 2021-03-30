@@ -23,7 +23,7 @@ const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura
 const PRIVATE_KEY = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 
 const celoProvider = host => {
-  console.log('provider host:', host)
+  console.log('celo provider host:', host)
   const web3 = new Web3(host)
 
   const kit = ContractKit.newKitFromWeb3(web3)
@@ -41,7 +41,7 @@ module.exports = {
   networks: {
     //Ganache
     development: {
-      host: "127.0.0.1",
+      host: "localhost",
       port: 8545,
       network_id: "*",
       gas: 6300000,
