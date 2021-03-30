@@ -8,12 +8,9 @@ const Utils = artifacts.require("Utils");
 const isCeloNetwork = require('./isCeloNetwork')
 
 module.exports = async function (deployer, networkName, accounts) {
-    if (isCeloNetwork(networkName)) return
+    if (isCeloNetwork(networkName)) return console.log('Skipping on Celo')
 
     let symbol = 'e';
-
-    if (networkName == 'rskregtest' || networkName == 'rsktestnet' || networkName == 'rskmainnet' || networkName === 'alfajores')
-        symbol = 'c';
 
     const multiSig = await MultiSigWallet.deployed();
     const allowTokens = await AllowTokens.deployed();

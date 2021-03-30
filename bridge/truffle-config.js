@@ -17,18 +17,23 @@ const fs = require('fs');
 const Web3 = require('web3')
 const path = require('path')
 
-// Connect to the desired network
-const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
-const kit = ContractKit.newKitFromWeb3(web3)
-// const kit = Kit.newKit('https://forno.celo.org') // mainnet endpoint
 
-let MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
+const MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 const PRIVATE_KEY = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 
-const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY)
-console.log(`Account address: ${account.address}`)
-kit.addAccount(account.privateKey)
+const celoProvider = host => {
+  console.log('provider host:', host)
+  const web3 = new Web3(host)
+
+  const kit = ContractKit.newKitFromWeb3(web3)
+  const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY)
+  console.log(`Account address: ${account.address}`)
+  kit.addAccount(account.privateKey)
+
+  return kit.web3.currentProvider
+}
+
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -97,19 +102,22 @@ module.exports = {
       gasPrice: 10000000000,
       skipDryRun: true
     },
-    ethmainnet: {
+    mainnet: {
       provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
       network_id: 1,
       gas: 6700000,
       gasPrice: 250000000000,
       skipDryRun: true
     },
+    // Celo
     alfajores: {
-      provider: kit.web3.currentProvider,
+      provider: celoProvider('https://alfajores-forno.celo-testnet.org'),
+      gasPrice: 1000000000,
       network_id: 44787
     },
-    celo_mainnet: {
-      provider: kit.web3.currentProvider,
+    celo: {
+      provider: celoProvider('https://forno.celo.org'),
+      gasPrice: 500000000,
       network_id: 42220
     }
   },

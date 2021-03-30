@@ -4,7 +4,7 @@ const MultiSigWallet = artifacts.require('MultiSigWallet');
 const isCeloNetwork = require('./isCeloNetwork')
 
 module.exports = function (deployer, networkName, accounts) {
-  if (!isCeloNetwork(networkName)) return
+  if (!isCeloNetwork(networkName)) return console.log('Skipping on ethereum')
 
     deployer
         .then(async () => {

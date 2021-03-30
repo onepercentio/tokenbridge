@@ -11,6 +11,8 @@ module.exports = async function (deployer, networkName, accounts) {
   if (networkName === 'development') {
     return ERC1820Registry(accounts[0]);
   }
+
+  console.log('Skipping ERC1820 deployment')
 };
 
 

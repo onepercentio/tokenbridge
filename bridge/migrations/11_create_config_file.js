@@ -10,7 +10,7 @@ const isCeloNetwork = require('./isCeloNetwork')
 const fs = require('fs');
 
 function shouldDeployToken(network) {
-    return !network.toLowerCase().includes('mainnet');
+    return network === 'kovan' || network === 'alfajores'
 }
 
 module.exports = function (deployer, networkName, accounts) {

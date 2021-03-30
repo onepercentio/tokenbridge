@@ -8,7 +8,7 @@ const Utils = artifacts.require("Utils");
 const isCeloNetwork = require('./isCeloNetwork')
 
 module.exports = async function (deployer, networkName, accounts) {
-  if (!isCeloNetwork(networkName)) return
+  if (!isCeloNetwork(networkName)) return console.log('Skipping on ethereum')
 
   let symbol = 'c';
 
