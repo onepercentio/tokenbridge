@@ -1,7 +1,7 @@
 const { deployProxy } = require('@openzeppelin/truffle-upgrades')
 const MultiSigWallet = artifacts.require("MultiSigWallet");
 const Federation = artifacts.require("Federation");
-const AllowTokens = artifacts.require('AllowTokens');
+// const AllowTokens = artifacts.require('AllowTokens');
 const SideTokenFactory = artifacts.require('SideTokenFactory');
 const Bridge = artifacts.require('Bridge');
 const Utils = artifacts.require("Utils");
@@ -13,7 +13,7 @@ module.exports = async function (deployer, networkName, accounts) {
     let symbol = 'e';
 
     const multiSig = await MultiSigWallet.deployed();
-    const allowTokens = await AllowTokens.deployed();
+    // const allowTokens = await AllowTokens.deployed();
     const sideTokenFactory = await SideTokenFactory.deployed();
     const federation = await Federation.deployed();
 
@@ -23,7 +23,7 @@ module.exports = async function (deployer, networkName, accounts) {
     console.log('linking both ...........')
     await deployer.link(Utils, Bridge);
 
-    let initArgs = [multiSig.address, federation.address, allowTokens.address, sideTokenFactory.address, symbol];
+    let initArgs = [multiSig.address, federation.address, '0x38a7a203ebd79774b8eef5cbb871ace7f69b5fee', sideTokenFactory.address, symbol];
     console.log('deploying upgradeable bridge')
     const instance = await deployProxy(Bridge, initArgs, { deployer, unsafeAllowLinkedLibraries: true })
 

@@ -1,8 +1,9 @@
 {
-    "bridge": "0x6bfb847b04b106b60c5a1fbaf8e0e39f52af250e",
-    "federation": "0x60d166bf7e3f5886bc8eda27a6c3791679b57837",
-    "multiSig": "0xfccfa81a6557138559aebcbe69da6aff5b02b747",
-    "allowTokens": "0x7b5ad880d6fc7dbbbb52661f45189addb8a54dcb",
+    "bridge": "0x5e9bcff6febd7f2f1d01f536e82823f50eaa0f11",
+    "federation": "0xc1b86ef6aa64d7dec63dd9ce1dfca7d2babb9772",
+    "multiSig": "0x74d647d3f3f29622c63c929ae775c2d81ebaaed2",
+    "allowTokens": "0x54554f494db0c00c9a84baf3f9bf032b77ed539f",
+    "networkName": "kovan-fork",
     "host": "",
-    "fromBlock": 23949769
+    "fromBlock": 24106592
 }

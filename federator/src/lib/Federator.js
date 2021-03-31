@@ -37,8 +37,7 @@ module.exports = class Federator {
     }
 
     async run() {
-        let retries = 1;
-        // let retries = 3;
+        let retries = 3;
         const sleepAfterRetrie = 3000;
         while (retries > 0) {
             try {
@@ -49,7 +48,8 @@ module.exports = class Federator {
                     confirmations = 10
                 }
                 if (chainId == 1) { //ethereum mainnet 24hs
-                    confirmations = 5760
+                    // confirmations = 5760
+                    confirmations = 20
                 }
                 if (chainId == 30) { // rsk mainnet 24hs
                     confirmations = 2880
@@ -81,7 +81,7 @@ module.exports = class Federator {
                 fromBlock = parseInt(fromBlock) + 1;
                 this.logger.debug('Running from Block', fromBlock);
 
-                const recordsPerPage = 3000;
+                const recordsPerPage = 1000;
                 const numberOfPages = Math.ceil((toBlock - fromBlock) / recordsPerPage);
                 this.logger.debug(`Total pages ${numberOfPages}, blocks per page ${recordsPerPage}`);
 

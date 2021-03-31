@@ -105,8 +105,8 @@ module.exports = {
     mainnet: {
       provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
       network_id: 1,
-      gas: 6700000,
-      gasPrice: 250000000000,
+      gas: 3000000,
+      gasPrice: 170000000000,
       skipDryRun: true
     },
     // Celo
