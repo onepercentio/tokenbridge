@@ -2098,19 +2098,6 @@
                     confirmationTime: '5 minutes',
                     secondsPerBlock: 5,
                 };
-                let RSK_TESTNET_CONFIG = {
-                    networkId: 31,
-                    name: 'RSK Testnet',
-                    bridge: '0x684a8a976635fb7ad74a0134ace990a6a0fcce84',
-                    allowTokens: '0x952b706a9Ab5fD2d3B36205648ED7852676AfBE7',
-                    federation: '0x925606edc5863c079b712daed560c31eff8335b9',
-                    explorer: 'https://explorer.testnet.rsk.co',
-                    explorerTokenTab: '?__tab=tokens%20transfers',
-                    confirmations: 10,
-                    confirmationTime: '50 seconds',
-                    secondsPerBlock: 30,
-                    crossToNetwork: KOVAN_CONFIG
-                };
                 let CELO_ALFAJORES = {
                     networkId: 44787,
                     name: 'Celo Alfajores',
@@ -2130,29 +2117,29 @@
                 let ETH_CONFIG = {
                     networkId: 1,
                     name: 'ETH Mainnet',
-                    bridge: "0x12ed69359919fc775bc2674860e8fe2d2b6a7b5d",
-                    allowTokens: "0xe4aa0f414725c9322a1a9d80d469c5e234786653",
-                    federation: "0x479f86ecbe766073d2712ef418aceb56d5362a2b",
+                    bridge: "0x9719D81c506c95f92caF970851b22AFc88aee574",
+                    allowTokens: "0x38a7a203ebd79774b8eef5cbb871ace7f69b5fee",
+                    federation: "0xB84F69f1D44F1B621356013D77b017077F112745",
                     explorer: 'https://etherscan.io',
                     explorerTokenTab: '#tokentxns',
-                    confirmations: 5760,
-                    confirmationTime: '24 hours',
+                    confirmations: 300,
+                    confirmationTime: '1 hour',
                     secondsPerBlock: 15,
                 };
-                let RSK_MAINNET_CONFIG = {
-                    networkId: 30,
-                    name: 'RSK Mainnet',
-                    bridge: "0x9d11937e2179dc5270aa86a3f8143232d6da0e69",
-                    allowTokens: "0xe4aa0f414725c9322a1a9d80d469c5e234786653",
-                    federation: "0xe37b6516f4fe2a27569a2751c1ad50f6340df369",
-                    explorer: 'https://explorer.rsk.co',
+                let CELO_MAINNET_CONFIG = {
+                    networkId: 42220,
+                    name: 'CELO Mainnet',
+                    bridge: "0x4a2115ba6fb935c49dec4395045cd2b996060e13",
+                    allowTokens: "0x6ecb9e0440b1d40a62276d3bb9b3602859fd1cbc",
+                    federation: "0x8ba9ce201fe7808cd7952617af868ebb5740e9e9",
+                    explorer: 'https://explorer.celo.org',
                     explorerTokenTab: '?__tab=tokens%20transfers',
-                    confirmations: 2880,
-                    confirmationTime: '24 hours',
-                    secondsPerBlock: 30,
+                    confirmations: 720,
+                    confirmationTime: '1 hour',
+                    secondsPerBlock: 5,
                     crossToNetwork: ETH_CONFIG
                 };
-                ETH_CONFIG.crossToNetwork = RSK_MAINNET_CONFIG;
+                ETH_CONFIG.crossToNetwork = CELO_MAINNET_CONFIG;
                 // --------- CONFIGS  END --------------
 
                 // --------- ABI --------------
@@ -2165,27 +2152,15 @@
                 // --------- ABI  END --------------
 
                 // --------- TOKENS --------------
-                const DOC_TOKEN = { token: 'DOC', name: 'Dollar on Chain', icon: 'https://raw.githubusercontent.com/rsksmart/rsk-contract-metadata/master/images/doc.png',
-                    30:{symbol:'DOC', address:'0xe700691da7b9851f2f35f8b8182c69c53ccad9db', decimals:18},
-                    31:{symbol:'DOC', address:'0xcb46c0ddc60d18efeb0e586c17af6ea36452dae0', decimals:18},
-                    1:{symbol:'eDOC', address:'0x69f6d4D4813F8e2e618DAE7572e04b6D5329E207', decimals:18},
-                    42:{symbol:'eDOC', address:'0x09a8f2041Be23e8eC3c72790C9A92089BC70FbCa', decimals:18}
-                };
-
-                const DAI_TOKEN = { token: 'DAI', name: 'Dai Stablecoin', icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
-                    30:{symbol:'rDAI', address:'0x6b1a73d547f4009a26b8485b63d7015d248ad406', decimals:18},
-                    31:{symbol:'rKovDAI', address:'0x7b846216a194c69bb1ea52ea8faa92d314866451', decimals:18},
-                    1:{symbol:'DAI', address:'0x6b175474e89094c44da98b954eedeac495271d0f', decimals:18},
-                    42:{symbol:'DAI', address:'0x4F96Fe3b7A6Cf9725f59d353F723c1bDb64CA6Aa', decimals:18}
-                };
-
-                const MAIN_TOKEN = { token: 'MAIN', name: 'MCO2 Token', icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8826.png',
-                    42: { symbol: 'MAIN', address: '0x2025a7f004013b653b2fc3afb755230e440c5aa2', decimals: 18},
-                    44787: { symbol: 'cMAIN', address: '0x89c5608bd1563bf5d50addd262b1112e0b0b7950', decimals: 18}
+                const MCO2_TOKEN = { token: 'MAIN', name: 'MCO2 Token', icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/8826.png',
+                    1: { symbol: 'MCO2', address: '0xfc98e825a2264d890f9a1e68ed50e1526abccacd', decimals: 18},
+                    42: { symbol: 'MCO2', address: '0x2025a7f004013b653b2fc3afb755230e440c5aa2', decimals: 18},
+                    42220: { symbol: 'cMCO2', address: '0x32A9FE697a32135BFd313a6Ac28792DaE4D9979d', decimals: 18},
+                    44787: { symbol: 'cMCO2', address: '0x89c5608bd1563bf5d50addd262b1112e0b0b7950', decimals: 18}
                 }
 
                 // Remove INV token because its paused on mainnet
-                const TOKENS = [ MAIN_TOKEN, ];
+                const TOKENS = [MCO2_TOKEN ];
                 // --------- TOKENS  END --------------
             </script>
         </div>
