@@ -1113,7 +1113,7 @@
                         1: 'https://mainnet.infura.io/v3/8043bb2cf99347b1bfadfb233c5325c0',
                         42220: 'https://forno.celo.org'
                     };
-                    supportedChains = [1,30];
+                    supportedChains = [1,42220];
                     if(isTestnet) {
                         rpc = {
                             42: 'https://kovan.infura.io/v3/8043bb2cf99347b1bfadfb233c5325c0',
@@ -1682,9 +1682,9 @@
                         window.ethereum.autoRefreshOnNetworkChange = false;
                     }
 
-                    // const provider = await rLogin.connect()
-                    //     .catch(() => { throw new Error('Login failed. Please try again.') })
-                    const provider = await ethereum.request({ method: 'eth_requestAccounts' })
+                    const provider = await rLogin.connect()
+                        .catch(() => { throw new Error('Login failed. Please try again.') })
+                    // const provider = await ethereum.request({ method: 'eth_requestAccounts' })
                     window.web3 = new Web3(provider);
                     let accounts = await getAccounts();
                     let chainId = await web3.eth.net.getId();
