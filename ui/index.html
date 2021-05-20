@@ -770,7 +770,7 @@
 
                 <div id="tokensTab">
                     <h5 class="subtitle">Token bridge list</h5>
-                    <p class="text-center">RSK native tokens will transform into e(tokenName). Ethereum native tokens will transform into r(tokenName)</p>
+                    <p class="text-center">Celo native tokens will transform into e(tokenName). Ethereum native tokens will transform into c(tokenName)</p>
                     <div id="tokenListTab" class="align-center">
                         <!-- Dinamic content made with JS -->
                     </div>
@@ -1960,8 +1960,8 @@
                             case 42:
                                 config = KOVAN_CONFIG;
                                 break;
-                            case 31:
-                                config = RSK_TESTNET_CONFIG;
+                            case 44787:
+                                config = CELO_ALFAJORES;
                                 break;
                             }
                         } else {
@@ -1969,8 +1969,8 @@
                             case 1:
                                 config = ETH_CONFIG;
                                 break;
-                            case 30:
-                                config = RSK_MAINNET_CONFIG;
+                            case 42220:
+                                config = CELO_MAINNET_CONFIG;
                                 break;
                             }
                         }
@@ -1981,7 +1981,7 @@
                             $('.indicator').addClass('btn-outline-danger');
                             $('.toNetwork').text('To Network');
                             $('#willReceiveToken').html('');
-                            throw new Error(`Wrong Network.<br /> Please connect your wallet to <b>${isTestnet ? 'RSK Testnet or Ethereum Kovan' : 'RSK Mainnet or Ethereum Mainnet'}</b>`);
+                            throw new Error(`Wrong Network.<br /> Please connect your wallet to <b>${isTestnet ? 'Celo Testnet or Ethereum Kovan' : 'Celo Mainnet or Ethereum Mainnet'}</b>`);
                         }
                         allowTokensContract = new web3.eth.Contract(ALLOW_TOKENS_ABI, config.allowTokens);
                         bridgeContract = new web3.eth.Contract(BRIDGE_ABI, config.bridge);
