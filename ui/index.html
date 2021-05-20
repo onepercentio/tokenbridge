@@ -578,7 +578,7 @@
                             <button id="logIn" type="button" class="btn btn-primary badge-pill">
                                 Connect wallet
                             </button>
-                            <a id="help" href="https://moss.earth/wp-content/uploads/2021/01/logo_moss.svg" style="display: none;">
+                            <a id="help" href="mailto:falecom@moss.earth" style="display: none;">
                                 Do you need help?
                             </a>
                         </div>
@@ -1682,8 +1682,9 @@
                         window.ethereum.autoRefreshOnNetworkChange = false;
                     }
 
-                    const provider = await rLogin.connect()
-                        .catch(() => { throw new Error('Login failed. Please try again.') })
+                    // const provider = await rLogin.connect()
+                    //     .catch(() => { throw new Error('Login failed. Please try again.') })
+                    const provider = await ethereum.request({ method: 'eth_requestAccounts' })
                     window.web3 = new Web3(provider);
                     let accounts = await getAccounts();
                     let chainId = await web3.eth.net.getId();
