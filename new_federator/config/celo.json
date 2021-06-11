@@ -1,0 +1,9 @@
+{
+    "bridge": "0x4a2115ba6fb935c49dec4395045cd2b996060e13",
+    "federation": "0x8ba9ce201fe7808cd7952617af868ebb5740e9e9",
+    "multiSig": "0x0338d1a2a653230b59c2ed7f7bc96843fb40342e",
+    "allowTokens": "0x6ecb9e0440b1d40a62276d3bb9b3602859fd1cbc",
+    "networkName": "celo",
+    "host": "https://forno.celo.org",
+    "fromBlock": 5898988
+}

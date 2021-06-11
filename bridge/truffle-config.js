@@ -19,8 +19,12 @@ const path = require('path')
 
 
 const MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
+// const MNEMONIC = fs.existsSync('./mnemonic_partners.key') ? fs.readFileSync('./mnemonic_partners.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+
 const PRIVATE_KEY = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+// const PRIVATE_KEY = fs.existsSync('./privateKey2.secret') ? fs.readFileSync('./privateKey2.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+// const PRIVATE_KEY = fs.existsSync('./privateKey_dev.secret') ? fs.readFileSync('./privateKey_dev.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
 
 const celoProvider = host => {
   console.log('celo provider host:', host)
@@ -104,9 +108,10 @@ module.exports = {
     },
     mainnet: {
       provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
+      // provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY, 1), // partners wallet
       network_id: 1,
       gas: 3000000,
-      gasPrice: 170000000000,
+      gasPrice: 31000000000,
       skipDryRun: true
     },
     // Celo

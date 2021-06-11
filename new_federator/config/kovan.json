@@ -1,0 +1,10 @@
+{
+    "bridge": "0x9ad6e40e6620475d9a2001f16a9f710859f40d9d",
+    "federation": "0x1a3ee16cda26b63778851751cd9fabf716bc9a7d",
+    "multiSig": "0x268d762cfc2c57a86d28e56a4c1f6e926e72a9db",
+    "allowTokens": "0xc127647940a9d680cc7f871799b3772091561b63",
+    "networkName": "kovan",
+    "testToken": "0xa74b6079c332c7560939760991638aeb45893c0c",
+    "host": "",
+    "fromBlock": 24096787
+}

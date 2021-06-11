@@ -10,11 +10,16 @@ const Scheduler = require('./services/Scheduler.js');
 const Federator = require('./lib/Federator.js');
 
 const logger = log4js.getLogger('Federators');
-logger.info('Celo Host', config.mainchain.host);
+logger.info('RSK Host', config.mainchain.host);
 logger.info('ETH Host', config.sidechain.host);
 
-if(!config.mainchain || !config.sidechain) {
+if (!config.mainchain || !config.sidechain) {
     logger.error('Mainchain and Sidechain configuration are required');
+    process.exit();
+}
+
+if (!config.etherscanApiKey) {
+    logger.error('Etherscan API configuration is required');
     process.exit();
 }
 
@@ -26,7 +31,7 @@ const sideFederator = new Federator({
     storagePath: `${config.storagePath}/side-fed`
 }, log4js.getLogger('SIDE-FEDERATOR'));
 
-let pollingInterval = config.runEvery * 1000 * 10; // Minutes
+let pollingInterval = config.runEvery * 1000 * 60; // Minutes
 let scheduler = new Scheduler(pollingInterval, logger, { run: () => run() });
 
 scheduler.start().catch((err) => {

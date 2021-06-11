@@ -1,28 +1,15 @@
 const web3 = require('web3');
 const fs = require('fs');
-const { newKit } = require('@celo/contractkit')
-const abiBridge = require('../../../abis/Bridge.json');
-const abiFederation = require('../../../abis/Federation.json');
+const abiBridge = require('../../abis/Bridge.json');
+const abiFederation = require('../../abis/Federation.json');
 const TransactionSender = require('./TransactionSender');
 const CustomError = require('./CustomError');
 const utils = require('./utils');
-
-const web3OrContractKit = chainConfig => {
-    if (!utils.isCeloNetwork(chainConfig.network)) return new web3(chainConfig.host)
-
-    const kit = newKit(chainConfig.host)
-    kit.connection.addAccount(privateKey)
-
-    return kit.web3
-}
 
 module.exports = class Federator {
     constructor(config, logger, Web3 = web3) {
         this.config = config;
         this.logger = logger;
-
-        // this.mainWeb3 = web3OrContractKit(config.mainchain);
-        // this.sideWeb3 = web3OrContractKit(config.sidechain);
 
         this.mainWeb3 = new Web3(config.mainchain.host);
         this.sideWeb3 = new Web3(config.sidechain.host);
@@ -39,30 +26,36 @@ module.exports = class Federator {
     async run() {
         let retries = 3;
         const sleepAfterRetrie = 3000;
-        while (retries > 0) {
+        while(retries > 0) {
             try {
                 const currentBlock = await this.mainWeb3.eth.getBlockNumber();
                 const chainId = await this.mainWeb3.eth.net.getId();
+
+                const isMainSyncing = await this.mainWeb3.eth.isSyncing();
+                if (isMainSyncing !== false) {
+                    this.logger.warn(`ChainId ${chainId} is Syncing, ${JSON.stringify(isMainSyncing)}. Federator won't process requests till is synced`);
+                    return;
+                }
+                const isSideSyncing = await this.sideWeb3.eth.isSyncing();
+                if (isSideSyncing !== false) {
+                    const sideChainId = await this.sideWeb3.eth.net.getId();
+                    this.logger.warn(`ChainId ${sideChainId} is Syncing, ${JSON.stringify(isSideSyncing)}. Federator won't process requests till is synced`);
+                    return;
+                }
+
                 let confirmations = 0; //for rsk regtest and ganache
-                
-                if (chainId == 31 || chainId == 42) { // rsk testnet and kovan
+                if(chainId == 31 || chainId == 42 || chainId == 44787) { // testnet
                     confirmations = 10
                 }
-                
-                if (chainId == 1) { //ethereum mainnet 24hs
-                    // confirmations = 5760
-                    confirmations = 20
+                if( chainId == 1) { //ethereum mainnet 1h
+                    confirmations = 360
                 }
-                
-                if (chainId == 30) { // rsk mainnet 24hs
+                if(chainId == 30) { // rsk mainnet 24hs
                     confirmations = 2880
                 }
-
-                if (chainId == 42220) { // celo
-                    console.log('Celo network id')
-                    confirmations = 10
+                if(chainId == 42220) { // celo mainnet 1h (1 block each 5s)
+                    confirmations = 720
                 }
-
                 const toBlock = currentBlock - confirmations;
                 this.logger.info('Running to Block', toBlock);
 
@@ -73,31 +66,31 @@ module.exports = class Federator {
                 if (!fs.existsSync(this.config.storagePath)) {
                     fs.mkdirSync(this.config.storagePath);
                 }
-                let originalFromBlock = this.config.mainchain.fromBlock || 0;
+                let originalFromBlock = parseInt(this.config.mainchain.fromBlock) || 0;
                 let fromBlock = null;
                 try {
-                    fromBlock = fs.readFileSync(this.lastBlockPath, 'utf8');
-                } catch (err) {
+                    fromBlock = parseInt(fs.readFileSync(this.lastBlockPath, 'utf8'));
+                } catch(err) {
                     fromBlock = originalFromBlock;
                 }
-                if (fromBlock < originalFromBlock) {
+                if(fromBlock < originalFromBlock) {
                     fromBlock = originalFromBlock;
                 }
-                if (fromBlock >= toBlock) {
+                if(fromBlock >= toBlock){
                     this.logger.warn(`Current chain Height ${toBlock} is the same or lesser than the last block processed ${fromBlock}`);
                     return false;
                 }
-                fromBlock = parseInt(fromBlock) + 1;
+                fromBlock = fromBlock + 1;
                 this.logger.debug('Running from Block', fromBlock);
-
+                
                 const recordsPerPage = 1000;
                 const numberOfPages = Math.ceil((toBlock - fromBlock) / recordsPerPage);
                 this.logger.debug(`Total pages ${numberOfPages}, blocks per page ${recordsPerPage}`);
 
                 var fromPageBlock = fromBlock;
-                for (var currentPage = 1; currentPage <= numberOfPages; currentPage++) {
-                    var toPagedBlock = fromPageBlock + recordsPerPage - 1;
-                    if (currentPage == numberOfPages) {
+                for(var currentPage = 1; currentPage <= numberOfPages; currentPage++) { 
+                    var toPagedBlock = fromPageBlock + recordsPerPage-1;
+                    if(currentPage == numberOfPages) {
                         toPagedBlock = toBlock
                     }
                     this.logger.debug(`Page ${currentPage} getting events from block ${fromPageBlock} to ${toPagedBlock}`);
@@ -117,8 +110,8 @@ module.exports = class Federator {
                 console.log(err)
                 this.logger.error(new Error('Exception Running Federator'), err);
                 retries--;
-                this.logger.debug(`Run ${3 - retries} retrie`);
-                if (retries > 0) {
+                this.logger.debug(`Run ${3-retries} retrie`);
+                if( retries > 0) {
                     await utils.sleep(sleepAfterRetrie);
                 } else {
                     process.exit();
@@ -131,13 +124,12 @@ module.exports = class Federator {
         try {
             const transactionSender = new TransactionSender(this.sideWeb3, this.logger, this.config);
             const from = await transactionSender.getAddress(this.config.privateKey);
-            console.log('address', from)
 
-            for (let log of logs) {
+            for(let log of logs) {
                 this.logger.info('Processing event log:', log);
 
                 const { _to: receiver, _amount: amount, _symbol: symbol, _tokenAddress: tokenAddress,
-                    _decimals: decimals, _granularity: granularity } = log.returnValues;
+                    _decimals: decimals, _granularity:granularity } = log.returnValues;
 
                 let transactionId = await this.federationContract.methods.getTransactionId(
                     tokenAddress,
@@ -154,8 +146,8 @@ module.exports = class Federator {
 
                 let wasProcessed = await this.federationContract.methods.transactionWasProcessed(transactionId).call();
                 if (!wasProcessed) {
-                    let hasVoted = await this.federationContract.methods.hasVoted(transactionId).call({ from: from });
-                    if (!hasVoted) {
+                    let hasVoted = await this.federationContract.methods.hasVoted(transactionId).call({from: from});
+                    if(!hasVoted) {
                         this.logger.info(`Voting tx: ${log.transactionHash} block: ${log.blockHash} token: ${symbol}`);
                         await this._voteTransaction(tokenAddress,
                             receiver,
@@ -169,13 +161,14 @@ module.exports = class Federator {
                     } else {
                         this.logger.debug(`Block: ${log.blockHash} Tx: ${log.transactionHash} token: ${symbol}  has already been voted by us`);
                     }
-
+                    
                 } else {
                     this.logger.debug(`Block: ${log.blockHash} Tx: ${log.transactionHash} token: ${symbol} was already processed`);
                 }
             }
 
-            this._saveProgress(this.lastBlockPath, toBlock);
+            this._saveProgress(this.lastBlockPath, toBlock.toString());
+
             return true;
         } catch (err) {
             throw new CustomError(`Exception processing logs`, err);
@@ -188,7 +181,7 @@ module.exports = class Federator {
 
             const transactionSender = new TransactionSender(this.sideWeb3, this.logger, this.config);
             this.logger.info(`Voting Transfer ${amount} of ${symbol} trough sidechain bridge ${this.sideBridgeContract.options.address} to receiver ${receiver}`);
-
+            
             let txId = await this.federationContract.methods.getTransactionId(
                 tokenAddress,
                 receiver,
@@ -200,10 +193,8 @@ module.exports = class Federator {
                 decimals,
                 granularity
             ).call();
-
-            this.logger.info(`voteTransaction(${tokenAddress}, ${receiver}, ${amount}, ${symbol}, ${blockHash}, ${transactionHash}, ${logIndex}, ${decimals}, ${granularity})`);
-
-            const params = [
+            
+            let txData = await this.federationContract.methods.voteTransaction(
                 tokenAddress,
                 receiver,
                 amount,
@@ -213,23 +204,10 @@ module.exports = class Federator {
                 logIndex,
                 decimals,
                 granularity
-            ]
+            ).encodeABI();
 
-            if (utils.isCeloNetwork(this.config.sidechain.networkName)) {
-                console.log('SIDE CHAIN IS CELO')
-                await transactionSender.sendTransactionToCelo(
-                    this.federationContract.options.address,
-                    params,
-                    'voteTransaction',
-                    this.config.privateKey,
-                    this.config.sidechain.host
-                );
-                // throw new Error('custom error')
-            } else {
-                const txData = await this.federationContract.methods.voteTransaction(...params).encodeABI();
-                await transactionSender.sendTransaction(this.federationContract.options.address, txData, 0, this.config.privateKey);
-            }
-
+            this.logger.info(`voteTransaction(${tokenAddress}, ${receiver}, ${amount}, ${symbol}, ${blockHash}, ${transactionHash}, ${logIndex}, ${decimals}, ${granularity})`);
+            await transactionSender.sendTransaction(this.federationContract.options.address, txData, 0, this.config.privateKey);
             this.logger.info(`Voted transaction:${transactionHash} of block: ${blockHash} token ${symbol} to Federation Contract with TransactionId:${txId}`);
             return true;
         } catch (err) {
@@ -237,9 +215,9 @@ module.exports = class Federator {
         }
     }
 
-    _saveProgress(path, value) {
+    _saveProgress (path, value) {
         if (value) {
-            fs.writeFileSync(path, value.toString());
+            fs.writeFileSync(path, value);
         }
     }
 }

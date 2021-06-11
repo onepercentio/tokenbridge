@@ -1,0 +1,5 @@
+bridge = await Bridge.deployed()
+
+await bridge.receiveTokens.estimateGas('0xfC98e825A2264D890F9a1e68ed50E1526abCcacD', '1677197139806855848053', { from: '0xDB2d7102D6C1De0AecEBC204408D796553F55960', gasPrice: '31000000000' })
+
+await bridge.receiveTokens('0xfC98e825A2264D890F9a1e68ed50E1526abCcacD', '1677197139806855848053', { from: '0xDB2d7102D6C1De0AecEBC204408D796553F55960', gasPrice: '31000000000', gas: '200000' })

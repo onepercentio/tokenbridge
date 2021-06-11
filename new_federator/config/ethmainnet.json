@@ -1,0 +1,8 @@
+{
+    "bridge": "0x9719D81c506c95f92caF970851b22AFc88aee574",
+    "federation": "0xB84F69f1D44F1B621356013D77b017077F112745",
+    "multiSig": "0x4195530d44c96875199Fb03525DCB0F22e151f97",
+    "allowTokens": "0x38a7a203ebd79774b8eef5cbb871ace7f69b5fee",
+    "host": "https://mainnet.infura.io/v3/cab9930f8ed349d0b3a3b9bba5a00bd5",
+    "fromBlock": 12144230
+}

@@ -1,0 +1,10 @@
+{
+    "bridge": "0x63ebd62d70657d58b518f93015f1ab2635e5fe42",
+    "federation": "0x884ea3e022c87d2282e83036a43489082c60b312",
+    "multiSig": "0x61252767f8a4d6b134cf12a30afdacff1a35f70d",
+    "allowTokens": "0xbadc4a924ca5629756300f4e530a5af28a4eb4d4",
+    "networkName": "alfajores",
+    "testToken": "0x1711e6579da6ecd4ad01744a6fe756cc66402347",
+    "host": "",
+    "fromBlock": 4342468
+}
