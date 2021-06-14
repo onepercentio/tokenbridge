@@ -20,7 +20,7 @@ import "./ISideTokenFactory.sol";
 import "./AllowTokens.sol";
 import "./Utils.sol";
 
-contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePausable, UpgradableOwnable, ReentrancyGuard {
+contract Bridge_Celo_v2 is Initializable, IBridge, IERC777Recipient, UpgradablePausable, UpgradableOwnable, ReentrancyGuard {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
     using Address for address;
@@ -45,8 +45,10 @@ contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePaus
     bool public isUpgrading;
     uint256 constant public feePercentageDivider = 10000; // Porcentage with up to 2 decimals
     bool private alreadyRun;
+    address private authorizedContract;
 
     event FederationChanged(address _newFederation);
+    event AuthorizedContractChanged(address _newAuthorizedContract);
     event SideTokenFactoryChanged(address _newSideTokenFactory);
     event Upgrading(bool isUpgrading);
 
@@ -75,6 +77,11 @@ contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePaus
 
     modifier onlyFederation() {
         require(msg.sender == federation, "Bridge: Sender not Federation");
+        _;
+    }
+
+    modifier onlyAuthorizedContract() {
+        require(msg.sender == authorizedContract, "Bridge: Contract is not authorized");
         _;
     }
 
@@ -159,6 +166,13 @@ contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePaus
         //Transfer the tokens on IERC20, they should be already Approved for the bridge Address to use them
         IERC20(tokenToUse).safeTransferFrom(_msgSender(), address(this), amount);
         crossTokens(tokenToUse, sender, amount, "");
+        return true;
+    }
+
+    function receiveTokensFromContract(address tokenToUse, uint256 amount, address recipient) external onlyAuthorizedContract whenNotUpgrading whenNotPaused nonReentrant returns(bool) {
+        //Transfer the tokens on IERC20, they should be already Approved for the bridge Address to use them
+        IERC20(tokenToUse).safeTransferFrom(_msgSender(), address(this), amount);
+        crossTokens(tokenToUse, recipient, amount, "");
         return true;
     }
 
@@ -293,6 +307,21 @@ contract Bridge_Celo is Initializable, IBridge, IERC777Recipient, UpgradablePaus
 
     function getFederation() external view returns(address) {
         return federation;
+    }
+
+    function changeAuthorizedContract(address newAuthorizedContract) external onlyOwner returns(bool) {
+        _changeAuthorizedContract(newAuthorizedContract);
+        return true;
+    }
+
+    function _changeAuthorizedContract(address newAuthorizedContract) internal {
+        require(newAuthorizedContract != NULL_ADDRESS, "Bridge: Contract is empty");
+        authorizedContract = newAuthorizedContract;
+        emit AuthorizedContractChanged(federation);
+    }
+
+    function getAuthorizedContract() external view returns(address) {
+        return authorizedContract;
     }
 
     function changeSideTokenFactory(address newSideTokenFactory) external onlyOwner returns(bool) {

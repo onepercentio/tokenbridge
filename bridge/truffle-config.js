@@ -18,20 +18,20 @@ const Web3 = require('web3')
 const path = require('path')
 
 
-const MNEMONIC = fs.existsSync('./mnemonic.key') ? fs.readFileSync('./mnemonic.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
-// const MNEMONIC = fs.existsSync('./mnemonic_partners.key') ? fs.readFileSync('./mnemonic_partners.key', { encoding: 'utf8' }) : "";// Your metamask's recovery words
-const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+const MNEMONIC_DEV = fs.existsSync('./mnemonic_test.key') ? fs.readFileSync('./mnemonic_test.key', { encoding: 'utf8' }) : "";
+const MNEMONIC_PROD = fs.existsSync('./mnemonic_prod.key') ? fs.readFileSync('./mnemonic_prod.key', { encoding: 'utf8' }) : "";
+const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";
 
-const PRIVATE_KEY = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
-// const PRIVATE_KEY = fs.existsSync('./privateKey2.secret') ? fs.readFileSync('./privateKey2.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
-// const PRIVATE_KEY = fs.existsSync('./privateKey_dev.secret') ? fs.readFileSync('./privateKey_dev.secret',{ encoding: 'utf8' }) : "";// Your Infura API Key after its registration
+// const PRIVATE_KEY_PROD = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";
+const PRIVATE_KEY_PROD = fs.existsSync('./privateKey2.secret') ? fs.readFileSync('./privateKey2.secret',{ encoding: 'utf8' }) : "";
+const PRIVATE_KEY_DEV = fs.existsSync('./privateKey_dev.secret') ? fs.readFileSync('./privateKey_dev.secret',{ encoding: 'utf8' }) : "";
 
-const celoProvider = host => {
+const celoProvider = (pk, host) => {
   console.log('celo provider host:', host)
   const web3 = new Web3(host)
 
   const kit = ContractKit.newKitFromWeb3(web3)
-  const account = web3.eth.accounts.privateKeyToAccount(PRIVATE_KEY)
+  const account = web3.eth.accounts.privateKeyToAccount(pk)
   console.log(`Account address: ${account.address}`)
   kit.addAccount(account.privateKey)
 
@@ -50,7 +50,6 @@ module.exports = {
       network_id: "*",
       gas: 6300000,
       gasPrice: 1000000000,
-      from: '0x3Ed68019F385A51FA92E6e1009C4Afa2e4Cc3e1F'
     },
     //RSK
     rskregtest: {
@@ -85,14 +84,14 @@ module.exports = {
     },
      //Ethereum
      ropsten: {
-      provider: () => new HDWalletProvider(MNEMONIC, "https://ropsten.infura.io/v3/" + INFURA_API_KEY),
+      provider: () => new HDWalletProvider(MNEMONIC_DEV, "https://ropsten.infura.io/v3/" + INFURA_API_KEY),
       network_id: 3,
       gas: 4700000,
       gasPrice: 10000000000,
       skipDryRun: true
     },
     kovan: {
-      provider: () => new HDWalletProvider(MNEMONIC, "https://kovan.infura.io/v3/" + INFURA_API_KEY),
+      provider: () => new HDWalletProvider(MNEMONIC_DEV, "https://kovan.infura.io/v3/" + INFURA_API_KEY),
       network_id: 42,
       gas: 6300000,
       gasPrice: 1000000000,
@@ -100,15 +99,14 @@ module.exports = {
       networkCheckTimeout: 300000
     },
     rinkeby: {
-      provider: () => new HDWalletProvider(MNEMONIC, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY),
+      provider: () => new HDWalletProvider(MNEMONIC_DEV, "https://rinkeby.infura.io/v3/" + INFURA_API_KEY),
       network_id: 4,
       gas: 6300000,
       gasPrice: 10000000000,
       skipDryRun: true
     },
     mainnet: {
-      provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
-      // provider: () => new HDWalletProvider(MNEMONIC, "https://mainnet.infura.io/v3/" + INFURA_API_KEY, 1), // partners wallet
+      provider: () => new HDWalletProvider(MNEMONIC_PROD, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
       network_id: 1,
       gas: 3000000,
       gasPrice: 31000000000,
@@ -116,21 +114,21 @@ module.exports = {
     },
     // Celo
     alfajores: {
-      provider: celoProvider('https://alfajores-forno.celo-testnet.org'),
+      provider: celoProvider(PRIVATE_KEY_DEV, 'https://alfajores-forno.celo-testnet.org'),
       gasPrice: 1000000000,
       network_id: 44787
     },
     celo: {
-      provider: celoProvider('https://forno.celo.org'),
+      provider: celoProvider(PRIVATE_KEY_PROD, 'https://forno.celo.org'),
       gasPrice: 500000000,
       network_id: 42220
     }
   },
   plugins: ["solidity-coverage"],
-  mocha: {
-    reporter: 'eth-gas-reporter',
+  // mocha: {
+  //   reporter: 'eth-gas-reporter',
     //reporterOptions : { ... } // See options below
-  },
+  // },
   compilers: {
       solc: {
         version: "0.5.17",
