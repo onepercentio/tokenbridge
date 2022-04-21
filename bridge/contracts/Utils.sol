@@ -7,7 +7,7 @@ import "./zeppelin/token/ERC777/IERC777.sol";
 library Utils {
     using SafeMath for uint256;
 
-    IERC1820Registry constant private _erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    IERC1820Registry constant private _erc1820 = IERC1820Registry(0x8a0994B2b1b8aB22B8DE7000DD31931FD61771a9);
     // keccak256("ERC777Token")
     bytes32 constant private TOKENS_ERC777_HASH = 0xac7fbab5f54a3ca8194167523c6753bfeb96a445279294b6125b68cce2177054;
 

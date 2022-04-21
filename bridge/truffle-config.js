@@ -22,8 +22,8 @@ const MNEMONIC_DEV = fs.existsSync('./mnemonic_test.key') ? fs.readFileSync('./m
 const MNEMONIC_PROD = fs.existsSync('./mnemonic_prod.key') ? fs.readFileSync('./mnemonic_prod.key', { encoding: 'utf8' }) : "";
 const INFURA_API_KEY = fs.existsSync('./infura.key') ? fs.readFileSync('./infura.key',{ encoding: 'utf8' }) : "";
 
-// const PRIVATE_KEY_PROD = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";
-const PRIVATE_KEY_PROD = fs.existsSync('./privateKey2.secret') ? fs.readFileSync('./privateKey2.secret',{ encoding: 'utf8' }) : "";
+const PRIVATE_KEY_PROD = fs.existsSync('./privateKey.secret') ? fs.readFileSync('./privateKey.secret',{ encoding: 'utf8' }) : "";
+// const PRIVATE_KEY_PROD = fs.existsSync('./privateKey2.secret') ? fs.readFileSync('./privateKey2.secret',{ encoding: 'utf8' }) : "";
 const PRIVATE_KEY_DEV = fs.existsSync('./privateKey_dev.secret') ? fs.readFileSync('./privateKey_dev.secret',{ encoding: 'utf8' }) : "";
 
 const celoProvider = (pk, host) => {
@@ -37,6 +37,11 @@ const celoProvider = (pk, host) => {
 
   return kit.web3.currentProvider
 }
+
+const hd = new HDWalletProvider(MNEMONIC_PROD, "https://mainnet.infura.io/v3/" + INFURA_API_KEY)
+console.log(hd)
+
+const ONE_GWEI = 1000000000
 
 
 module.exports = {
@@ -109,7 +114,7 @@ module.exports = {
       provider: () => new HDWalletProvider(MNEMONIC_PROD, "https://mainnet.infura.io/v3/" + INFURA_API_KEY),
       network_id: 1,
       gas: 3000000,
-      gasPrice: 31000000000,
+      gasPrice: 60 * ONE_GWEI,
       skipDryRun: true
     },
     // Celo

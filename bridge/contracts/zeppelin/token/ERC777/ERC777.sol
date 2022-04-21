@@ -28,7 +28,7 @@ contract ERC777 is Context, IERC777, IERC20 {
     using SafeMath for uint256;
     using Address for address;
 
-    IERC1820Registry constant private _erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    IERC1820Registry constant private _erc1820 = IERC1820Registry(0x8a0994B2b1b8aB22B8DE7000DD31931FD61771a9);
 
     mapping(address => uint256) private _balances;
 

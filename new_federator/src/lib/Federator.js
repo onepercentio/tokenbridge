@@ -54,7 +54,7 @@ module.exports = class Federator {
                     confirmations = 2880
                 }
                 if(chainId == 42220) { // celo mainnet 1h (1 block each 5s)
-                    confirmations = 720
+                    confirmations = 20
                 }
                 const toBlock = currentBlock - confirmations;
                 this.logger.info('Running to Block', toBlock);
